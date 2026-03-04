@@ -42,8 +42,10 @@
          <!-- Top Right button -->
           <div class = "actions">
 
-            <!-- Creat Listing button-->
+            <!-- Create Listing button-->
+             <a href="{{url_for('createListing')}}">
              <button class = "primary-btn">Create Listing</button>
+             </a>
 
             <!-- Messages button -->
             <button class = "icon-btn" aria-label = "Messages">
@@ -51,9 +53,11 @@
             </button>
 
             <!-- Profile button -->
+             <a href="{{url_for('profile')}}">
              <button class = "icon-btn" aria-label = "Profile">
                 <i class = "fa-solid fa-user"></i>
              </button>
+            </a>
 
           </div>
     </header>

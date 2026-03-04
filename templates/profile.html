@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Red Hawk Exchange</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="header">
+    <div class="container">
+        <nav>
+            <img src="{{ url_for('static', filename='img/hawkLogo.svg') }}" class="logo">
+
+            <a href="{{url_for('dashboard')}}">
+            <button class='tab'>
+                        Dashboard
+                    </button>
+            </a>
+
+        </nav>
+        <div class="profile-section">
+            <div class="profile-left">
+                <div class="profile-icon-container">
+                    <i class="fa-solid fa-user profile-icon-styled"></i>
+                </div>
+                <h2>Username</h2>
+            </div>
+
+            <button class="chat-btn">Edit</button>
+        </div>
+
+    <div class="tabs">
+            <button class="tab active-tab" onclick="showActive()">Active Listings</button>
+            <button class="tab" onclick="showSaved()">Saved Listings</button>
+    </div>
+ <div id="activeListings" class="listings-grid">
+
+            <a href="item-books.html" class="item-card"> <!-- SITE DOESN'T EXIST; ERROR -->
+                <img src="{{ url_for('static', filename='img/textbook.jpg.webp') }}">
+                <p>Science textbooks</p>
+                <span>$40.00</span>
+            </a>
+
+            <a href="item-laptop.html" class="item-card"> <!-- SITE DOESN'T EXIST; ERROR -->
+                <img src="{{ url_for('static', filename='img/macbook.jpeg') }}">
+                <p>Laptop</p>
+                <span>$200.00</span>
+            </a>
+        </div>
+
+<div id="savedListings" class="listings-grid" style="display: none;"> <!-- SITE DOESN'T EXIST; ERROR -->
+            <a href="item-phone.html" class="item-card">
+                <img src="{{ url_for('static', filename='img/iphone12.jpg.webp') }}">
+                <p>Phone</p>
+                <span>$250.00</span>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+<script>
+function showActive(){
+    document.getElementById("activeListings").style.display = "grid";
+    document.getElementById("savedListings").style.display = "none";
+}
+
+function showSaved(){
+    document.getElementById("activeListings").style.display = "none";
+    document.getElementById("savedListings").style.display = "grid";
+}
+</script>
+
+</body>
+</html>

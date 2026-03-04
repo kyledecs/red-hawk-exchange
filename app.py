@@ -92,6 +92,21 @@ def dashboard():
 
     return render_template("dashboard.html", email=session.get("email"))
 
+# ------------ CREATE LISTING --------------
+@app.route("/createListing")
+def createListing():
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+    
+    return render_template("createListing.html")
+
+# ------------ PROFILE --------------
+@app.route("/profile")
+def profile():
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+    
+    return render_template("profile.html")
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
