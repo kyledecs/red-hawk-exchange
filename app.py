@@ -51,6 +51,7 @@ def register():
 
     return "Check your email to confirm your account before logging in."
 
+
 # ---------------- EMAIL CONFIRM CALLBACK ----------------
 @app.route("/auth/callback")
 def auth_callback():
