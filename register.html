@@ -1,19 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register - RedHawk Exchange</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body style="font-family:Arial; background:#0f172a; color:white; padding:40px;">
 
-<h2>Create Account (Montclair Only)</h2>
+<body class="auth-page">
+  <div class="auth-card">
 
-<form method="POST" action="/register">
-  <input name="email" placeholder="you@montclair.edu" required><br><br>
-  <input name="password" type="password" placeholder="Password" required><br><br>
-  <button type="submit">Register</button>
-</form>
+    <div class="auth-brand">
+      <img
+        class="brand-logo"
+        src="{{ url_for('static', filename='img/hawkLogo.svg') }}"
+        alt="Logo"
+      />
+      <div class="brand-name">
+        <span class="brand-redhawk">RedHawk</span>
+        <span class="brand-exchange">Exchange</span>
+      </div>
+    </div>
 
-<p><a href="/login-page" style="color:lightblue;">Already have an account? Login</a></p>
+    <h2 class="auth-title">Create Account</h2>
+    <div class="auth-note">Montclair email required (@montclair.edu)</div>
 
+    {% if error %}
+      <div class="auth-error">{{ error }}</div>
+    {% endif %}
+
+    {% if success %}
+      <div class="auth-success">{{ success }}</div>
+    {% endif %}
+
+    <form method="POST" action="/register">
+      <input class="auth-input" name="email" placeholder="you@montclair.edu" required>
+      <input class="auth-input" name="password" type="password" placeholder="Password" required>
+      <button class="auth-btn" type="submit">Register</button>
+    </form>
+
+    <div class="auth-footer">
+      <a class="auth-link" href="/login-page">
+        Already have an account? Login
+      </a>
+    </div>
+  </div>
 </body>
 </html>

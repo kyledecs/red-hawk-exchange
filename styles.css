@@ -1,0 +1,544 @@
+/* This file contains the CSS styles for the RedHawk Exchange homepage. */
+
+/* Colors */
+:root{
+    --bg: #f4f3f1;
+    --surface: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --red: #be211e;
+    --red-dark: #c62828;
+    --creamish: #f6f3ee;
+
+    --radius: 16px;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Times New Roman", Times, serif;;
+    color: var(--text);
+    background-color: var(--creamish);
+}
+
+/* Header */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--creamish);
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 14px 18px;
+}
+
+/* Branding, logo/name */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 220px;
+}
+
+.brand-logo {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    background: var(--creamish);
+}
+
+.brand-name {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.brand-redhawk {
+    font-weight: 800;
+    font-size: 25px;
+    color: var(--text);
+}
+
+.brand-exchange {
+    font-weight: 800;
+    font-size: 25px;
+    color: var(--red);
+}
+
+/* Search Bar*/
+.search-bar {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.search {
+    width: min(640px, 100%);
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background: #f3f4f6;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    padding: 10px 14px;
+}
+
+/* ================================== Search icon ==========================*/
+.search-icon {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    opacity: 0.65;
+}
+
+.search-icon::before {
+    content: " ";
+    position: absolute;
+    inset: 0;
+    border: 2px solid #9ca3af;
+    border-radius: 50%;
+    transform: scale(0.72);
+}
+
+.search-icon::after {
+    content: " ";
+    position: absolute;
+    width: 9px;
+    height: 2px;
+    background: #9ca3af;
+    right: -2px;
+    bottom: 2px;
+    transform: rotate(45deg);
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 14px;
+}
+
+/* ===========================Header action Buttons ===================*/
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.12s ease;
+}
+
+.icon-btn i {
+    font-size: 18px;
+    color: var(--text);
+}
+
+.icon-btn:hover {
+    background: #f9fafb;
+}
+
+.icon-btn:active {
+    transform: translateY(1px);
+}
+
+/* =========================== Create Listing Button ===================*/
+.primary-btn {
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: none;
+
+    background: var(--red);
+    color: white;
+
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: var(--red-dark);
+}
+
+/* =========================== Category Pills ===================*/
+.categories {
+    max-width: var(--container);
+    margin: 18px auto 0;
+    padding: 0 18px;
+
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+
+    justify-content: center;
+}
+
+.pill {
+    border: 1px solid #d6d2cd;
+    background: var(--surface);
+
+    padding: 14px 20px;
+    border-radius: 999px;
+
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+
+    transition: 0.12s ease;
+}
+
+.pill:hover {
+    background: #f9fafb;
+}
+
+/* =========================== Product Grid ===================*/
+.page {
+    max-width: var(--container);
+    margin: 18px auto 36px;
+    padding: 0 18px;
+}
+
+.page-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    align-items: start;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+
+    box-shadow: var(--shadow);
+    transition: 0.12s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-media {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: #f3f4f6;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 12px;
+}
+
+.card-name {
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.card-price {
+    font-weight: 800;
+    color: var(--text);
+}
+
+/*=========================== Layout Container ===================*/
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+/* =========================== Responsive Design ===================*/
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .primary-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-name {
+        display: none;
+    }
+}
+
+/* =========================== Form Styles =================== */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Styled to match your search-bar aesthetic */
+.custom-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: #f3f4f6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.custom-input:focus {
+    border-color: var(--red);
+    background: var(--surface);
+}
+
+/* Ensuring dropdowns and textareas match */
+select.custom-input {
+    cursor: pointer;
+    appearance: none; /* Removes default browser arrow for a cleaner look */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+textarea.custom-input {
+    resize: vertical;
+}
+
+/* =========================== Auth Pages ===================*/
+.auth-page {
+    min-height: 100vh;
+    background: var(--creamish);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 40px;
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.auth-title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.auth-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    background: white;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(190, 33, 30, 0.1);
+}
+
+.auth-btn {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 999px;
+    background: var(--red);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.12s ease;
+}
+
+.auth-btn:hover {
+    background: var(--red-dark);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 18px;
+}
+
+.auth-link {
+    color: var(--red);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+/* =========================== Auth Messages ===================*/
+.auth-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.auth-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* =========================== Split Login Layout ===================*/
+.split-auth-page {
+    min-height: 100vh;
+    display: flex;
+    background: var(--creamish);
+}
+
+.info-panel {
+    width: 50%;
+    background: var(--creamish);
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+}
+
+.info-content {
+    max-width: 500px;
+}
+
+.info-title {
+    font-size: 42px;
+    color: black;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.info-text {
+    font-size: 18px;
+    color: black;
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.info-features {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.feature-item {
+    padding: 12px 0;
+}
+
+.login-panel {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Mobile responsive */
+@media (max-width: 900px) {
+    .split-auth-page {
+        flex-direction: column;
+    }
+
+    .info-panel,
+    .login-panel {
+        width: 100%;
+    }
+
+    .info-panel {
+        padding: 40px 24px;
+        text-align: center;
+    }
+
+    .info-title {
+        font-size: 32px;
+    }
+}

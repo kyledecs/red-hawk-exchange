@@ -1,19 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - RedHawk Exchange</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body style="font-family:Arial; background:#0f172a; color:white; padding:40px;">
 
-<h2>Login</h2>
+<body class="split-auth-page">
 
-<form method="POST" action="/login">
-  <input name="email" placeholder="Email" required><br><br>
-  <input name="password" type="password" placeholder="Password" required><br><br>
-  <button type="submit">Login</button>
-</form>
+  <!-- LEFT INFO SECTION -->
+  <div class="info-panel">
+    <div class="info-content">
+      <div class="auth-brand">
+        <img
+          class="brand-logo"
+          src="{{ url_for('static', filename='img/hawkLogo.svg') }}"
+          alt="Logo"
+        />
+        <div class="brand-name">
+          <span class="brand-redhawk">RedHawk</span>
+          <span class="brand-exchange">Exchange</span>
+        </div>
+      </div>
 
-<p><a href="/register-page" style="color:lightblue;">New user? Register</a></p>
+      <h1 class="info-title">Buy, Sell, and Connect with Montclair Students</h1>
+
+      <p class="info-text">
+        A dedicated marketplace built exclusively for the Montclair State community.
+        Find textbooks, technology, dorm essentials, and more — all from trusted students.
+      </p>
+
+      <div class="info-features">
+        <div class="feature-item">✓ Safe student-only marketplace</div>
+        <div class="feature-item">✓ Verified @montclair.edu accounts</div>
+        <div class="feature-item">✓ Buy and sell locally on campus or off-campus</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT LOGIN SECTION -->
+  <div class="login-panel">
+    <div class="auth-card">
+      
+      <h2 class="auth-title">Login</h2>
+
+      {% if error %}
+        <div class="auth-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="/login">
+        <input class="auth-input" name="email" placeholder="Email" required>
+        <input class="auth-input" name="password" type="password" placeholder="Password" required>
+        <button class="auth-btn" type="submit">Login</button>
+      </form>
+
+      <div class="auth-footer">
+        <a class="auth-link" href="/register-page">
+          New user? Create an account
+        </a>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

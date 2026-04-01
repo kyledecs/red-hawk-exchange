@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Listing - RedHawk Exchange</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="centered-form-page">
+
+    <div class="container">
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('dashboard') }}" class="pill" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <main class="page">
+            <div class="card" style="max-width: 600px; margin: 40px auto; padding: 30px;">
+                <h2 class="page-title">Create New Listing</h2>
+                
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label class="card-name">Item Title</label>
+                        <input type="text" class="search-input custom-input" placeholder="Enter name of item...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="card-name">Price ($)</label>
+                        <input type="number" class="search-input custom-input" placeholder="0.00" step="1.00">
+                    </div>
+
+                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                        <div style="flex: 1;">
+                            <label class="card-name">Category</label>
+                            <select class="custom-input">
+                                <option value="technology">Technology</option> <!-- Placeholder Values -->
+                                <option value="textbooks">Textbooks</option>
+                                <option value="stationary">Stationary</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="card-name">Condition</label>
+                            <select class="custom-input">
+                                <option value="new">New</option>
+                                <option value="like-new">Like New</option>
+                                <option value="good">Used - Good</option>
+                                <option value="fair">Used - Fair</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="card-name">Description</label>
+                        <textarea class="custom-input" rows="5" placeholder="Descibe your item to potential buyers..."></textarea>
+                    </div>
+
+                    <button type="button" class="primary-btn" style="width: 100%; height: 50px; font-size: 16px;">
+                        Post Listing
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

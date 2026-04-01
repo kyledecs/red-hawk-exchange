@@ -33,10 +33,16 @@ def register():
     password = request.form.get("password")
 
     if not email or not password:
-        return "Email and password required", 400
+        return render_template(
+            "register.html",
+            error="Email and password required"
+        )
 
     if not email.endswith("@montclair.edu"):
-        return "Only @montclair.edu emails allowed", 403
+        return render_template(
+            "register.html",
+            error="Only @montclair.edu emails allowed"
+        )
 
     response = supabase.auth.sign_up({
         "email": email,
@@ -47,9 +53,16 @@ def register():
     })
 
     if response.user is None:
-        return "Registration failed"
+        return render_template(
+            "register.html",
+            error="Registration failed"
+        )
 
-    return "Check your email to confirm your account before logging in."
+    return render_template(
+        "register.html",
+        success="Check your email to confirm your account before logging in."
+    )
+
 
 # ---------------- EMAIL CONFIRM CALLBACK ----------------
 @app.route("/auth/callback")
@@ -75,22 +88,40 @@ def login():
     })
 
     if response.user is None:
-        return "Invalid login or email not confirmed."
+        return render_template(
+            "login.html",
+            error="Invalid login or email not confirmed."
+        )
 
     session["logged_in"] = True
     session["email"] = response.user.email
 
-    return redirect("/dashboard")
+    return redirect("/home")
 
 
-# ---------------- DASHBOARD ----------------
-@app.route("/dashboard")
+# ---------------- HOME ----------------
+@app.route("/home")
 def dashboard():
     if not session.get("logged_in"):
         return redirect("/login-page")
 
-    return render_template("dashboard.html", email=session.get("email"))
+    return render_template("home.html", email=session.get("email"))
 
+# ------------ CREATE LISTING --------------
+@app.route("/createListing")
+def createListing():
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+    
+    return render_template("createListing.html")
+
+# ------------ PROFILE --------------
+@app.route("/profile")
+def profile():
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+    
+    return render_template("profile.html")
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
