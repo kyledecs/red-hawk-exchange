@@ -48,6 +48,24 @@ nav{
     font-size: 28px;
 }
 
+.user-info{
+    display: flex;
+    flex-direction: column;
+}
+
+.grad-year{
+    font-size: 14px;
+    color: #110202;
+    margin-top: 5px;
+}
+#editInfo input{
+    display: block;
+    margin: 5px 0;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
 .chat-btn{
     background-color: #B33A32;
     color: white;
