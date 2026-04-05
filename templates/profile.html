@@ -27,10 +27,22 @@
                 <div class="profile-icon-container">
                     <i class="fa-solid fa-user profile-icon-styled"></i>
                 </div>
-                <h2>Username</h2>
+            <div class="user-info">
+                <div id="displayInfo">
+                <h2 id="usernameDisplay">Username</h2>
+                <p id="gradDisplay" class="grad-year">Class Year</p>
+                </div>
+
+                <div id="editInfo" style="display: none;">
+                <input type="text" id="usernameInput" placeholder="Enter username">
+                <input type="text" id="gradInput" placeholder="Class year (e.g. 2026)">
+                <button onclick="saveProfile()">Save</button>
+                </div>
+            </div>
+                
             </div>
 
-            <button class="chat-btn">Edit</button>
+            <button class="chat-btn" onclick="editProfile()">Edit</button>
         </div>
 
     <div class="tabs">
@@ -73,6 +85,28 @@ function showActive(){
 function showSaved(){
     document.getElementById("activeListings").style.display = "none";
     document.getElementById("savedListings").style.display = "grid";
+}
+
+function editProfile(){
+    document.getElementById("displayInfo").style.display = "none";
+    document.getElementById("editInfo").style.display = "block";
+
+    document.getElementById("usernameInput").value =
+    document.getElementById("usernameDisplay").innerText;
+
+    document.getElementById("gradInput").value =
+    document.getElementById("gradDisplay").innerText.replace("Class of ", "");
+}
+
+function saveProfile(){
+    const newUsername = document.getElementById("usernameInput").value;
+    const newGradYear = document.getElementById("gradInput").value;
+
+    document.getElementById("usernameDisplay").innerText = newUsername;
+    document.getElementById("gradDisplay").innerText = "Class of " + newGradYear;
+
+    document.getElementById("displayInfo").style.display = "block";
+    document.getElementById("editInfo").style.display = "none";
 }
 </script>
 
