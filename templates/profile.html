@@ -1,27 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Profile - Red Hawk Exchange</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RedHawk Exchange</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
+    <!--Header section for left side-->
+    <header class = "header">
+        <div class = "brand">
+            <a href="{{url_for('homepage')}}">
+            <img
+                class = "brand-logo"
+                src = "{{ url_for('static', filename='img/hawkLogo.svg') }}" 
+                alt = "RedHawk Exchange Logo"
+            />
+            </a>
+
+            <div class = "brand-name">
+                <span class = "brand-redhawk">RedHawk</span>
+                <span class = "brand-exchange">Exchange</span>
+            </div>
+        </div>
+
+         <!-- Top Right button -->
+          <div class = "actions">
+
+            <!-- Create Listing button -->
+             <a href = "{{ url_for('createListing') }}" 
+                class = "primary-btn" 
+                style = "text-decoration: none; display: inline-flex; align-items: center;"> + Create Listing
+            </a>
+
+            <!-- Messages button -->
+            <button class = "icon-btn" aria-label = "Messages">
+                <i class = "fa-solid fa-envelope"></i>
+            </button>
+
+            <!-- Profile button -->
+             <div class="dropdown">
+                <button class="icon-btn" aria-label="Profile">
+                    {% if user_data and user_data.avatarURL %}
+                        <img src="{{ user_data.avatarURL }}" alt="Profile" class="profile-img-icon">
+                    {% else %}
+                        <i class="fa-solid fa-user"></i>
+                    {% endif %}
+                </button>
+
+                <div class="dropdown-content">
+                    <a href="{{ url_for('profile') }}">
+                        <i class="fa-solid fa-id-card"></i> View Profile
+                    </a>
+                    <hr> 
+                    <a href="{{ url_for('logout') }}" class="logout-link">
+                        <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                    </a>
+                </div>
+            </div>
+
+          </div>
+    </header>
 
 <body>
     <div id="header">
     <div class="container">
-        <nav>
-            <img src="{{ url_for('static', filename='img/hawkLogo.svg') }}" class="logo">
-
-            <a href="{{url_for('dashboard')}}">
-            <button class='tab'>
-                        Dashboard
-                    </button>
-            </a>
-
-        </nav>
         <div class="profile-section">
             <div class="profile-left">
                 <div class="profile-icon-container">

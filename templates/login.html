@@ -1,95 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login - RedHawkExchange</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .card {
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      width: 380px;
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 25px;
-      color: #CE1126;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #CE1126;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #CE1126;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    button:hover {
-      background-color: #a50e1f;
-    }
-
-    a {
-      color: #CE1126;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .footer-text {
-      margin-top: 15px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - RedHawk Exchange</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
-<body>
-  <div class="card">
-    <h2>RedHawkExchange</h2>
+<body class="split-auth-page">
 
-    <form method="POST" action="/login">
-      <input name="email" placeholder="Email" required>
-      <input name="password" type="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
+  <!-- LEFT INFO SECTION -->
+  <div class="info-panel">
+    <div class="info-content">
+      <div class="auth-brand">
+        <img
+          class="brand-logo"
+          src="{{ url_for('static', filename='img/hawkLogo.svg') }}"
+          alt="Logo"
+        />
+        <div class="brand-name">
+          <span class="brand-redhawk">RedHawk</span>
+          <span class="brand-exchange">Exchange</span>
+        </div>
+      </div>
 
-    <div class="footer-text">
-      <p><a href="/register-page">New user? Create an account</a></p>
+      <h1 class="info-title">Buy, Sell, and Connect with Montclair Students</h1>
+
+      <p class="info-text">
+        A dedicated marketplace built exclusively for the Montclair State community.
+        Find textbooks, technology, dorm essentials, and more — all from trusted students.
+      </p>
+
+      <div class="info-features">
+        <div class="feature-item">✓ Safe student-only marketplace</div>
+        <div class="feature-item">✓ Verified @montclair.edu accounts</div>
+        <div class="feature-item">✓ Buy and sell locally on campus or off-campus</div>
+      </div>
     </div>
   </div>
+
+  <!-- RIGHT LOGIN SECTION -->
+  <div class="login-panel">
+    <div class="auth-card">
+      
+      <h2 class="auth-title">Login</h2>
+
+      {% if error %}
+        <div class="auth-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="/login">
+        <input class="auth-input" name="email" placeholder="Email" required>
+        <input class="auth-input" name="password" type="password" placeholder="Password" required>
+        <button class="auth-btn" type="submit">Login</button>
+      </form>
+
+      <div class="auth-footer">
+        <a class="auth-link" href="/register-page">
+          New user? Create an account
+        </a>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
