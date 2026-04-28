@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ listing.title }}</title>
+</head>
+<body>
+
+<h1>{{ listing.title }}</h1>
+<p>${{ listing.price }}</p>
+<p>{{ listing.description }}</p>
+
+{% if listing.photos %}
+    <img src="{{ listing.photos[0] }}" style="max-width:300px;">
+{% endif %}
+
+</body>
+</html>

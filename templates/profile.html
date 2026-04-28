@@ -8,117 +8,170 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
-    <!--Header section for left side-->
-    <header class = "header">
-        <div class = "brand">
-            <a href="{{url_for('homepage')}}">
-            <img
-                class = "brand-logo"
-                src = "{{ url_for('static', filename='img/hawkLogo.svg') }}" 
-                alt = "RedHawk Exchange Logo"
-            />
-            </a>
+<header class="header">
+    <div class="brand">
+        <a href="{{url_for('homepage')}}">
+        <img
+            class="brand-logo"
+            src="{{ url_for('static', filename='img/hawkLogo.svg') }}" 
+            alt="RedHawk Exchange Logo"
+        />
+        </a>
 
-            <div class = "brand-name">
-                <span class = "brand-redhawk">RedHawk</span>
-                <span class = "brand-exchange">Exchange</span>
-            </div>
+        <div class="brand-name">
+            <span class="brand-redhawk">RedHawk</span>
+            <span class="brand-exchange">Exchange</span>
         </div>
+    </div>
 
-         <!-- Top Right button -->
-          <div class = "actions">
+    <div class="actions">
 
-            <!-- Create Listing button -->
-             <a href = "{{ url_for('createListing') }}" 
-                class = "primary-btn" 
-                style = "text-decoration: none; display: inline-flex; align-items: center;"> + Create Listing
-            </a>
+        <a href="{{ url_for('createListing') }}" 
+           class="primary-btn" 
+           style="text-decoration: none; display: inline-flex; align-items: center;">
+           + Create Listing
+        </a>
 
-            <!-- Messages button -->
-            <button class = "icon-btn" aria-label = "Messages">
-                <i class = "fa-solid fa-envelope"></i>
+        <button class="icon-btn">
+            <i class="fa-solid fa-envelope"></i>
+        </button>
+
+        <div class="dropdown">
+            <button class="icon-btn">
+                {% if user_data and user_data.avatarURL %}
+                    <img src="{{ user_data.avatarURL }}" class="profile-img-icon">
+                {% else %}
+                    <i class="fa-solid fa-user"></i>
+                {% endif %}
             </button>
 
-            <!-- Profile button -->
-             <div class="dropdown">
-                <button class="icon-btn" aria-label="Profile">
-                    {% if user_data and user_data.avatarURL %}
-                        <img src="{{ user_data.avatarURL }}" alt="Profile" class="profile-img-icon">
-                    {% else %}
-                        <i class="fa-solid fa-user"></i>
-                    {% endif %}
-                </button>
-
-                <div class="dropdown-content">
-                    <a href="{{ url_for('profile') }}">
-                        <i class="fa-solid fa-id-card"></i> View Profile
-                    </a>
-                    <hr> 
-                    <a href="{{ url_for('logout') }}" class="logout-link">
-                        <i class="fa-solid fa-right-from-bracket"></i> Log Out
-                    </a>
-                </div>
-            </div>
-
-          </div>
-    </header>
-
-<body>
-    <div id="header">
-    <div class="container">
-        <div class="profile-section">
-            <div class="profile-left">
-                <div class="profile-icon-container">
-                    <i class="fa-solid fa-user profile-icon-styled"></i>
-                </div>
-            <div class="user-info">
-                <div id="displayInfo">
-                <h2 id="usernameDisplay">Username</h2>
-                <p id="gradDisplay" class="grad-year">Class Year</p>
-                </div>
-
-                <div id="editInfo" style="display: none;">
-                <input type="text" id="usernameInput" placeholder="Enter username">
-                <input type="text" id="gradInput" placeholder="Class year (e.g. 2026)">
-                <button onclick="saveProfile()">Save</button>
-                </div>
-            </div>
-                
-            </div>
-
-            <button class="chat-btn" onclick="editProfile()">Edit</button>
-        </div>
-
-    <div class="tabs">
-            <button class="tab active-tab" onclick="showActive()">Active Listings</button>
-            <button class="tab" onclick="showSaved()">Saved Listings</button>
-    </div>
- <div id="activeListings" class="listings-grid">
-
-            <a href="item-books.html" class="item-card"> <!-- SITE DOESN'T EXIST; ERROR -->
-                <img src="{{ url_for('static', filename='img/textbook.jpg.webp') }}">
-                <p>Science textbooks</p>
-                <span>$40.00</span>
-            </a>
-
-            <a href="item-laptop.html" class="item-card"> <!-- SITE DOESN'T EXIST; ERROR -->
-                <img src="{{ url_for('static', filename='img/macbook.jpeg') }}">
-                <p>Laptop</p>
-                <span>$200.00</span>
-            </a>
-        </div>
-
-<div id="savedListings" class="listings-grid" style="display: none;"> <!-- SITE DOESN'T EXIST; ERROR -->
-            <a href="item-phone.html" class="item-card">
-                <img src="{{ url_for('static', filename='img/iphone12.jpg.webp') }}">
-                <p>Phone</p>
-                <span>$250.00</span>
+            <div class="dropdown-content">
+                <a href="{{ url_for('profile') }}">
+                    <i class="fa-solid fa-id-card"></i> View Profile
+                </a>
+                <hr> 
+                <a href="{{ url_for('logout') }}" class="logout-link">
+                    <i class="fa-solid fa-right-from-bracket"></i> Log Out
                 </a>
             </div>
-
         </div>
 
     </div>
+</header>
+
+<body>
+<div class="container">
+
+    <!-- PROFILE SECTION -->
+    <div class="profile-section">
+        <div class="profile-left">
+
+            <!-- PROFILE IMAGE -->
+            <div class="profile-icon-container">
+                {% if user_data and user_data.avatarURL %}
+                    <img src="{{ user_data.avatarURL }}" class="profile-icon-styled">
+                {% else %}
+                    <i class="fa-solid fa-user profile-icon-styled"></i>
+                {% endif %}
+            </div>
+
+            <!-- USER INFO -->
+            <div class="user-info">
+
+                <!-- DISPLAY MODE -->
+                <div id="displayInfo">
+
+                    <h2>
+                        {{ user_data.displayName if user_data and user_data.displayName else "No Name Set" }}
+                    </h2>
+
+                    <p><b>Major:</b>
+                        {{ user_data.major if user_data and user_data.major else "Not set" }}
+                    </p>
+
+                    <p><b>Year:</b>
+                        {{ user_data.yearStanding if user_data and user_data.yearStanding else "Not set" }}
+                    </p>
+
+                    <p><b>Bio:</b>
+                        {{ user_data.bio if user_data and user_data.bio else "No bio yet" }}
+                    </p>
+
+                </div>
+
+                <!-- EDIT MODE -->
+                <form id="editInfo" style="display:none;" method="POST" action="/update-profile">
+
+                    <input type="text" name="displayName"
+                        placeholder="Display Name"
+                        value="{{ user_data.displayName if user_data else '' }}">
+
+                    <input type="text" name="major"
+                        placeholder="Major"
+                        value="{{ user_data.major if user_data else '' }}">
+
+                    <input type="text" name="yearStanding"
+                        placeholder="Year (e.g. 2026)"
+                        value="{{ user_data.yearStanding if user_data else '' }}">
+
+                    <input type="text" name="avatarURL"
+                        placeholder="Avatar URL"
+                        value="{{ user_data.avatarURL if user_data else '' }}">
+
+                    <textarea name="bio"
+                        placeholder="Bio">{{ user_data.bio if user_data else '' }}</textarea>
+
+                    <button type="submit">Save</button>
+                </form>
+
+                <button onclick="editProfile()">Edit Profile</button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab active-tab" onclick="showActive()">Active Listings</button>
+        <button class="tab" onclick="showSaved()">Saved Listings</button>
+    </div>
+
+    <!-- ACTIVE LISTINGS -->
+    <!-- USER LISTINGS -->
+    <div id="activeListings" class="listings-grid">
+
+        {% if listings and listings|length > 0 %}
+
+            {% for item in listings %}
+                    <a href="{{ url_for('listing_detail', listing_id=item.id) }}" class="item-card">
+
+                    {% if item.photos and item.photos|length > 0 %}
+                     <img src="{{ item.photos[0] }}">
+                 {% endif %}
+
+                    <p>{{ item.title }}</p>
+                    <span>${{ item.price }}</span>
+                </a>
+            {% endfor %}
+
+        {% else %}
+
+            <p style="padding: 20px;">You have no listings yet.</p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- SAVED LISTINGS -->
+    <div id="savedListings" class="listings-grid" style="display:none;">
+        <a class="item-card">
+            <img src="{{ url_for('static', filename='img/iphone12.jpg.webp') }}">
+            <p>Phone</p>
+            <span>$250.00</span>
+        </a>
+    </div>
+
+</div>
 
 <script>
 function showActive(){
@@ -134,23 +187,6 @@ function showSaved(){
 function editProfile(){
     document.getElementById("displayInfo").style.display = "none";
     document.getElementById("editInfo").style.display = "block";
-
-    document.getElementById("usernameInput").value =
-    document.getElementById("usernameDisplay").innerText;
-
-    document.getElementById("gradInput").value =
-    document.getElementById("gradDisplay").innerText.replace("Class of ", "");
-}
-
-function saveProfile(){
-    const newUsername = document.getElementById("usernameInput").value;
-    const newGradYear = document.getElementById("gradInput").value;
-
-    document.getElementById("usernameDisplay").innerText = newUsername;
-    document.getElementById("gradDisplay").innerText = "Class of " + newGradYear;
-
-    document.getElementById("displayInfo").style.display = "block";
-    document.getElementById("editInfo").style.display = "none";
 }
 </script>
 

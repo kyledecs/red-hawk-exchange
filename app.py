@@ -31,12 +31,10 @@ def get_first_photo(photos):
 def home():
     return redirect("/login-page")
 
-
 # ---------------- REGISTER PAGE ----------------
 @app.route("/register-page")
 def register_page():
     return render_template("register.html")
-
 
 # ---------------- REGISTER ----------------
 @app.route("/register", methods=["POST"])
@@ -45,16 +43,10 @@ def register():
     password = request.form.get("password")
 
     if not email or not password:
-        return render_template(
-            "register.html",
-            error="Email and password required"
-        )
+        return render_template("register.html", error="Email and password required")
 
     if not email.endswith("@montclair.edu"):
-        return render_template(
-            "register.html",
-            error="Only @montclair.edu emails allowed"
-        )
+        return render_template("register.html", error="Only @montclair.edu emails allowed")
 
     response = supabase.auth.sign_up({
         "email": email,
@@ -65,28 +57,22 @@ def register():
     })
 
     if response.user is None:
-        return render_template(
-            "register.html",
-            error="Registration failed"
-        )
+        return render_template("register.html", error="Registration failed")
 
     return render_template(
         "register.html",
         success="Check your email to confirm your account before logging in."
     )
 
-
 # ---------------- EMAIL CONFIRM CALLBACK ----------------
 @app.route("/auth/callback")
 def auth_callback():
     return redirect("/login-page")
 
-
 # ---------------- LOGIN PAGE ----------------
 @app.route("/login-page")
 def login_page():
     return render_template("login.html")
-
 
 # ---------------- LOGIN ----------------
 @app.route("/login", methods=["POST"])
@@ -100,17 +86,19 @@ def login():
     })
 
     if response.user is None:
-        return render_template(
-            "login.html",
-            error="Invalid login or email not confirmed."
-        )
+        return render_template("login.html", error="Invalid login or email not confirmed.")
 
     session["logged_in"] = True
     session["email"] = response.user.email
     session["userID"] = response.user.id
 
-    return redirect("/homepage")
+    # ✅ AUTO-CREATE PROFILE IF NOT EXISTS
+    supabase.table("profiles").upsert({
+        "id": response.user.id,
+        "email": response.user.email
+    }).execute()
 
+    return redirect("/homepage")
 
 # ---------------- HOMEPAGE ----------------
 @app.route("/homepage")
@@ -119,10 +107,10 @@ def homepage():
         return redirect("/login-page")
     
     user_id = session.get("userID")
-    print(user_id)
+
     response = supabase.table("profiles").select("*").eq("id", user_id).execute()
-    user_data = response.data[0]
-    
+    user_data = response.data[0] if response.data else {}
+
     search = request.args.get("query", "").strip()
 
     try:
@@ -140,6 +128,7 @@ def homepage():
         
         for listing in listings:
             listing["display_photos"] = get_first_photo(listing.get("photos"))
+
     except Exception as e:
         print("Homepage Error:", e)
         listings = []
@@ -153,8 +142,6 @@ def createListing():
         return redirect("/login-page")
     
     if request.method == 'POST':
-        
-        user = supabase.auth.get_user()
         listerID = session.get('userID')
         
         uploadedFiles = request.files.getlist("photos")
@@ -170,7 +157,8 @@ def createListing():
                 supabase.storage.from_("listingPhotos").upload(
                     path=pathSupabase,
                     file=fileData,
-                    file_options={'content-type': file.content_type})
+                    file_options={'content-type': file.content_type}
+                )
                 
                 urlRes = supabase.storage.from_("listingPhotos").get_public_url(pathSupabase)
                 photoURLS.append(urlRes)
@@ -181,27 +169,67 @@ def createListing():
             "price": request.form.get("price"),
             "status": "Available",
             "photos": photoURLS,
-            # EDIT HERE TO ADD MORE ATTRIBUTES TO POST LISTING
         }
         
-        response = supabase.table("listings").insert(newListing).execute()
+        supabase.table("listings").insert(newListing).execute()
         
         return redirect("/homepage")
-    else:
-        return render_template("createListing.html")
+
+    return render_template("createListing.html")
 
 # ------------ PROFILE --------------
 @app.route("/profile")
 def profile():
     if not session.get("logged_in"):
         return redirect("/login-page")
-    
-    user_id = session.get("userID")
-    print(user_id)
-    response = supabase.table("profiles").select("*").eq("id", user_id).execute()
-    user_data = response.data[0]
 
-    return render_template("profile.html", user_data=user_data)
+    user_id = session.get("userID")
+
+    # PROFILE DATA
+    response = supabase.table("profiles") \
+        .select("*") \
+        .eq("id", user_id) \
+        .execute()
+
+    user_data = response.data[0] if response.data else {}
+
+    # USER LISTINGS (NEW PART)
+    listings_res = supabase.table("listings") \
+        .select("*") \
+        .eq("lister_id", user_id) \
+        .order("created_at", desc=True) \
+        .execute()
+
+    listings = listings_res.data if listings_res.data else []
+
+    return render_template(
+        "profile.html",
+        user_data=user_data,
+        listings=listings
+    )
+
+@app.route("/update-profile", methods=["POST"])
+def update_profile():
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    user_id = session.get("userID")
+
+    displayName = request.form.get("displayName")
+    major = request.form.get("major")
+    yearStanding = request.form.get("yearStanding")
+    bio = request.form.get("bio")
+    avatarURL = request.form.get("avatarURL")
+
+    supabase.table("profiles").update({
+        "displayName": displayName,
+        "major": major,
+        "yearStanding": yearStanding,
+        "bio": bio,
+        "avatarURL": avatarURL
+    }).eq("id", user_id).execute()
+
+    return redirect("/profile")
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
@@ -210,14 +238,29 @@ def logout():
         supabase.auth.sign_out()
     except Exception as e:
         print("Supabase sign_out error:", e)
+
     session.clear()
     return redirect("/login-page")
 
+# ------------ Details page for listing ------------- #
+@app.route("/listing/<listing_id>")
+def listing_detail(listing_id):
+    listing = supabase.table("listings") \
+        .select("*") \
+        .eq("id", listing_id) \
+        .single() \
+        .execute()
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    return render_template("listing.html", listing=listing.data)
 
 # ----------- ERROR --------------
 @app.errorhandler(413)
 def request_entity_too_large(error):
-    return render_template("createListing.html", error="File is too large! Please upload images under 5MB."), 413
+    return render_template(
+        "createListing.html",
+        error="File is too large! Please upload images under 5MB."
+    ), 413
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
