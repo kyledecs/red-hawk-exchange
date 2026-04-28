@@ -4,18 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RedHawk Exchange</title>
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
+<body>
+
+<!-- ================= HEADER ================= -->
 <header class="header">
+
     <div class="brand">
-        <a href="{{url_for('homepage')}}">
-        <img
-            class="brand-logo"
-            src="{{ url_for('static', filename='img/hawkLogo.svg') }}" 
-            alt="RedHawk Exchange Logo"
-        />
+        <a href="{{ url_for('homepage') }}">
+            <img class="brand-logo"
+                 src="{{ url_for('static', filename='img/hawkLogo.svg') }}"
+                 alt="RedHawk Exchange Logo" />
         </a>
 
         <div class="brand-name">
@@ -26,10 +29,9 @@
 
     <div class="actions">
 
-        <a href="{{ url_for('createListing') }}" 
-           class="primary-btn" 
-           style="text-decoration: none; display: inline-flex; align-items: center;">
-           + Create Listing
+        <a href="{{ url_for('createListing') }}" class="primary-btn"
+           style="text-decoration:none; display:inline-flex; align-items:center;">
+            + Create Listing
         </a>
 
         <button class="icon-btn">
@@ -49,7 +51,7 @@
                 <a href="{{ url_for('profile') }}">
                     <i class="fa-solid fa-id-card"></i> View Profile
                 </a>
-                <hr> 
+                <hr>
                 <a href="{{ url_for('logout') }}" class="logout-link">
                     <i class="fa-solid fa-right-from-bracket"></i> Log Out
                 </a>
@@ -59,135 +61,239 @@
     </div>
 </header>
 
-<body>
+<!-- ================= PAGE ================= -->
 <div class="container">
 
-    <!-- PROFILE SECTION -->
-    <div class="profile-section">
-        <div class="profile-left">
+    <!-- ================= PROFILE CARD ================= -->
+    <div class="profile-card">
 
-            <!-- PROFILE IMAGE -->
-            <div class="profile-icon-container">
+        <div class="profile-top">
+
+            <div class="profile-avatar">
                 {% if user_data and user_data.avatarURL %}
-                    <img src="{{ user_data.avatarURL }}" class="profile-icon-styled">
+                    <img src="{{ user_data.avatarURL }}">
                 {% else %}
-                    <i class="fa-solid fa-user profile-icon-styled"></i>
+                    <i class="fa-solid fa-user"></i>
                 {% endif %}
             </div>
 
-            <!-- USER INFO -->
-            <div class="user-info">
+            <div class="profile-main">
 
-                <!-- DISPLAY MODE -->
-                <div id="displayInfo">
+                <h2 class="profile-name">
+                    {{ user_data.displayName if user_data and user_data.displayName else "No Name Set" }}
+                </h2>
 
-                    <h2>
-                        {{ user_data.displayName if user_data and user_data.displayName else "No Name Set" }}
-                    </h2>
-
-                    <p><b>Major:</b>
-                        {{ user_data.major if user_data and user_data.major else "Not set" }}
-                    </p>
-
-                    <p><b>Year:</b>
-                        {{ user_data.yearStanding if user_data and user_data.yearStanding else "Not set" }}
-                    </p>
-
-                    <p><b>Bio:</b>
-                        {{ user_data.bio if user_data and user_data.bio else "No bio yet" }}
-                    </p>
-
+                <div class="profile-meta">
+                    <span><b>Major:</b> {{ user_data.major if user_data and user_data.major else "Not set" }}</span>
+                    <span><b>Year:</b> {{ user_data.yearStanding if user_data and user_data.yearStanding else "Not set" }}</span>
                 </div>
 
-                <!-- EDIT MODE -->
-                <form id="editInfo" style="display:none;" method="POST" action="/update-profile">
+                <p class="profile-bio">
+                    {{ user_data.bio if user_data and user_data.bio else "No bio yet" }}
+                </p>
 
-                    <input type="text" name="displayName"
-                        placeholder="Display Name"
-                        value="{{ user_data.displayName if user_data else '' }}">
-
-                    <input type="text" name="major"
-                        placeholder="Major"
-                        value="{{ user_data.major if user_data else '' }}">
-
-                    <input type="text" name="yearStanding"
-                        placeholder="Year (e.g. 2026)"
-                        value="{{ user_data.yearStanding if user_data else '' }}">
-
-                    <input type="text" name="avatarURL"
-                        placeholder="Avatar URL"
-                        value="{{ user_data.avatarURL if user_data else '' }}">
-
-                    <textarea name="bio"
-                        placeholder="Bio">{{ user_data.bio if user_data else '' }}</textarea>
-
-                    <button type="submit">Save</button>
-                </form>
-
-                <button onclick="editProfile()">Edit Profile</button>
+                <button onclick="editProfile()" class="profile-action-btn">
+                    Edit Profile
+                </button>
 
             </div>
+
         </div>
+
+        <!-- ================= EDIT PROFILE ================= -->
+       <form id="editInfo"
+            class="profile-edit-card"
+            style="display:none;"
+            method="POST"
+            action="/update-profile"
+            enctype="multipart/form-data">
+
+            <h3 class="profile-edit-title">Edit Profile</h3>
+
+            <!-- PROFILE PICTURE -->
+            <div class="form-group">
+                <label class="form-label">Profile Picture</label>
+                <input class="custom-input"
+                    type="file"
+                    name="avatar"
+                    accept="image/*">
+            </div>
+
+            <!-- NAME -->
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input class="custom-input"
+                    type="text"
+                    name="displayName"
+                    placeholder="Display Name"
+                    value="{{ user_data.displayName if user_data else '' }}">
+            </div>
+
+            <!-- MAJOR -->
+            <div class="form-group">
+                <label class="form-label">Major</label>
+                <input class="custom-input"
+                    type="text"
+                    name="major"
+                    placeholder="Major"
+                    value="{{ user_data.major if user_data else '' }}">
+            </div>
+
+            <!-- YEAR -->
+            <div class="form-group">
+                <label class="form-label">Year</label>
+                <input class="custom-input"
+                    type="text"
+                    name="yearStanding"
+                    placeholder="Year"
+                    value="{{ user_data.yearStanding if user_data else '' }}">
+            </div>
+
+            <!-- BIO -->
+            <div class="form-group">
+                <label class="form-label">Bio</label>
+                <textarea class="custom-input"
+                        name="bio"
+                        placeholder="Bio">{{ user_data.bio if user_data else '' }}</textarea>
+            </div>
+
+            <div class="profile-edit-actions">
+                <button type="submit" class="auth-btn">Save Changes</button>
+                <button type="button" class="secondary-btn" onclick="editProfile()">Cancel</button>
+            </div>
+
+        </form>
+
     </div>
 
-    <!-- TABS -->
+    <!-- ================= TABS ================= -->
     <div class="tabs">
-        <button class="tab active-tab" onclick="showActive()">Active Listings</button>
-        <button class="tab" onclick="showSaved()">Saved Listings</button>
+
+        <button class="tab active-tab" onclick="showActive()">
+            Active Listings
+        </button>
+
+        <button class="tab" onclick="showSaved()">
+            Saved Listings
+        </button>
+
     </div>
 
-    <!-- ACTIVE LISTINGS -->
-    <!-- USER LISTINGS -->
-    <div id="activeListings" class="listings-grid">
+    <!-- ================= ACTIVE LISTINGS ================= -->
+    <div id="activeListings" class="grid" style="display:grid;">
 
         {% if listings and listings|length > 0 %}
 
-            {% for item in listings %}
-                    <a href="{{ url_for('listing_detail', listing_id=item.id) }}" class="item-card">
+            {% for listing in listings %}
+            <article class="card">
 
-                    {% if item.photos and item.photos|length > 0 %}
-                     <img src="{{ item.photos[0] }}">
-                 {% endif %}
+                <a href="{{ url_for('listing_detail', listing_id=listing.id) }}">
 
-                    <p>{{ item.title }}</p>
-                    <span>${{ item.price }}</span>
+                    <div class="card-media">
+                        {% if listing.photos and listing.photos|length > 0 %}
+                            <img class="card-image" src="{{ listing.photos[0] }}">
+                        {% else %}
+                            <img class="card-image" src="{{ url_for('static', filename='img/hawkLogo.svg') }}">
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card-title">{{ listing.title }}</div>
+                        <div class="card-price">${{ listing.price }}</div>
+                    </div>
+
                 </a>
+
+            </article>
             {% endfor %}
 
         {% else %}
-
-            <p style="padding: 20px;">You have no listings yet.</p>
-
+            <p>No listings yet.</p>
         {% endif %}
 
     </div>
 
-    <!-- SAVED LISTINGS -->
-    <div id="savedListings" class="listings-grid" style="display:none;">
-        <a class="item-card">
-            <img src="{{ url_for('static', filename='img/iphone12.jpg.webp') }}">
-            <p>Phone</p>
-            <span>$250.00</span>
-        </a>
+    <!-- ================= SAVED LISTINGS ================= -->
+    <div id="savedListings" class="grid" style="display:none;">
+
+        {% if saved_listings and saved_listings|length > 0 %}
+
+            {% for listing in saved_listings %}
+            <article class="card">
+
+                <!-- HEART BUTTON (same as homepage) -->
+                <form method="POST"
+                      action="/toggle-save/{{ listing.id }}"
+                      class="heart-form">
+
+                    <button type="submit" class="icon-btn" style="position:absolute; margin:10px;">
+                        <i class="fa-solid fa-heart" style="color:red;"></i>
+                    </button>
+
+                </form>
+
+                <a href="{{ url_for('listing_detail', listing_id=listing.id) }}">
+
+                    <div class="card-media">
+                        {% if listing.photos and listing.photos|length > 0 %}
+                            <img class="card-image" src="{{ listing.photos[0] }}">
+                        {% else %}
+                            <img class="card-image" src="{{ url_for('static', filename='img/hawkLogo.svg') }}">
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card-title">{{ listing.title }}</div>
+                        <div class="card-price">${{ listing.price }}</div>
+                    </div>
+
+                </a>
+
+            </article>
+            {% endfor %}
+
+        {% else %}
+            <p>No saved listings yet.</p>
+        {% endif %}
+
     </div>
 
 </div>
 
+<!-- ================= JS ================= -->
 <script>
-function showActive(){
+
+function showActive() {
     document.getElementById("activeListings").style.display = "grid";
     document.getElementById("savedListings").style.display = "none";
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active-tab"));
+    document.querySelectorAll(".tab")[0].classList.add("active-tab");
 }
 
-function showSaved(){
+function showSaved() {
     document.getElementById("activeListings").style.display = "none";
     document.getElementById("savedListings").style.display = "grid";
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active-tab"));
+    document.querySelectorAll(".tab")[1].classList.add("active-tab");
 }
 
 function editProfile(){
-    document.getElementById("displayInfo").style.display = "none";
-    document.getElementById("editInfo").style.display = "block";
+    const form = document.getElementById("editInfo");
+    const top = document.querySelector(".profile-top");
+
+    const hidden = form.style.display === "none" || form.style.display === "";
+
+    if(hidden){
+        form.style.display = "flex";
+        top.style.display = "none";
+    } else {
+        form.style.display = "none";
+        top.style.display = "flex";
+    }
 }
+
 </script>
 
 </body>

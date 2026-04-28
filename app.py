@@ -101,6 +101,7 @@ def login():
     return redirect("/homepage")
 
 # ---------------- HOMEPAGE ----------------
+# ---------------- HOMEPAGE ----------------
 @app.route("/homepage")
 def homepage():
     if not session.get("logged_in"):
@@ -126,15 +127,34 @@ def homepage():
         response = query.execute()
         listings = response.data if response.data else []
         
+        # ---------------- IMAGE FIX ----------------
         for listing in listings:
             listing["display_photos"] = get_first_photo(listing.get("photos"))
+
+        # ---------------- HEART (SAVED STATE) ----------------
+        saved_ids = set()
+
+        saved_res = supabase.table("savedListings") \
+            .select("listingID") \
+            .eq("userID", user_id) \
+            .execute()
+
+        if saved_res.data:
+            saved_ids = {item["listingID"] for item in saved_res.data}
+
+        for listing in listings:
+            listing["is_saved"] = listing["id"] in saved_ids
 
     except Exception as e:
         print("Homepage Error:", e)
         listings = []
 
-    return render_template("homepage.html", listings=listings, search=search, user_data=user_data)
-
+    return render_template(
+        "homepage.html",
+        listings=listings,
+        search=search,
+        user_data=user_data
+    )
 # ------------ CREATE LISTING --------------
 @app.route("/createListing", methods=['GET','POST'])
 def createListing():
@@ -185,7 +205,7 @@ def profile():
 
     user_id = session.get("userID")
 
-    # PROFILE DATA
+    # ================= PROFILE DATA =================
     response = supabase.table("profiles") \
         .select("*") \
         .eq("id", user_id) \
@@ -193,7 +213,7 @@ def profile():
 
     user_data = response.data[0] if response.data else {}
 
-    # USER LISTINGS (NEW PART)
+    # ================= USER LISTINGS =================
     listings_res = supabase.table("listings") \
         .select("*") \
         .eq("lister_id", user_id) \
@@ -202,11 +222,61 @@ def profile():
 
     listings = listings_res.data if listings_res.data else []
 
+   # ================= SAVED LISTINGS =================
+    saved_res = supabase.table("savedListings") \
+    .select("listingID") \
+    .eq("userID", user_id) \
+    .execute()
+
+    saved_ids = [item["listingID"] for item in saved_res.data] if saved_res.data else []
+
+    saved_listings = []
+
+    if saved_ids:
+        saved_listings = supabase.table("listings") \
+            .select("*") \
+            .in_("id", saved_ids) \
+            .execute() \
+            .data or []
+        # ================= RENDER PAGE =================
     return render_template(
         "profile.html",
         user_data=user_data,
-        listings=listings
+        listings=listings,
+        saved_listings=saved_listings
     )
+
+@app.route("/toggle-save/<listing_id>", methods=["POST"])
+def toggle_save(listing_id):
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    user_id = session.get("userID")
+
+    # check if already saved
+    existing = supabase.table("savedListings") \
+        .select("*") \
+        .eq("userID", user_id) \
+        .eq("listingID", listing_id) \
+        .execute()
+
+    if existing.data:
+        # UNSAVE
+        supabase.table("savedListings") \
+            .delete() \
+            .eq("userID", user_id) \
+            .eq("listingID", listing_id) \
+            .execute()
+    else:
+        # SAVE
+        supabase.table("savedListings") \
+            .insert({
+                "userID": user_id,
+                "listingID": listing_id
+            }) \
+            .execute()
+
+    return redirect(request.referrer or "/profile")
 
 @app.route("/update-profile", methods=["POST"])
 def update_profile():
@@ -219,18 +289,48 @@ def update_profile():
     major = request.form.get("major")
     yearStanding = request.form.get("yearStanding")
     bio = request.form.get("bio")
-    avatarURL = request.form.get("avatarURL")
 
-    supabase.table("profiles").update({
+    # -------------------------
+    # AVATAR UPLOAD (NEW)
+    # -------------------------
+    avatar_file = request.files.get("avatar")
+    avatar_url = None
+
+    if avatar_file and avatar_file.filename != "":
+        file_ext = avatar_file.filename.rsplit(".", 1)[-1]
+        unique_name = f"{uuid.uuid4()}.{file_ext}"
+        path = f"{user_id}/{unique_name}"
+
+        file_data = avatar_file.read()
+
+        # upload to Supabase Storage
+        supabase.storage.from_("avatars").upload(
+            path=path,
+            file=file_data,
+            file_options={"content-type": avatar_file.content_type}
+        )
+
+        avatar_url = supabase.storage.from_("avatars").get_public_url(path)
+
+    # -------------------------
+    # BUILD UPDATE DATA
+    # -------------------------
+    update_data = {
         "displayName": displayName,
         "major": major,
         "yearStanding": yearStanding,
-        "bio": bio,
-        "avatarURL": avatarURL
-    }).eq("id", user_id).execute()
+        "bio": bio
+    }
+
+    if avatar_url:
+        update_data["avatarURL"] = avatar_url
+
+    supabase.table("profiles") \
+        .update(update_data) \
+        .eq("id", user_id) \
+        .execute()
 
     return redirect("/profile")
-
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
 def logout():

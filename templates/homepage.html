@@ -10,60 +10,57 @@
 
 <body>
 
-<!--Header section for left side-->
-<header class = "header">
-    <div class = "brand">
-        <a href="{{url_for('homepage')}}">
-        <img
-            class = "brand-logo"
-            src = "{{ url_for('static', filename='img/hawkLogo.svg') }}" 
-            alt = "RedHawk Exchange Logo"
-        />
+<!-- ================= HEADER ================= -->
+<header class="header">
+
+    <div class="brand">
+        <a href="{{ url_for('homepage') }}">
+            <img
+                class="brand-logo"
+                src="{{ url_for('static', filename='img/hawkLogo.svg') }}"
+                alt="RedHawk Exchange Logo"
+            />
         </a>
 
-        <div class = "brand-name">
-            <span class = "brand-redhawk">RedHawk</span>
-            <span class = "brand-exchange">Exchange</span>
+        <div class="brand-name">
+            <span class="brand-redhawk">RedHawk</span>
+            <span class="brand-exchange">Exchange</span>
         </div>
     </div>
 
-    <!-- Search Bar Functionality -->
-    <div class = "search-bar">
-        <form class = "search" action="{{ url_for('homepage') }}" method="GET">
-            <span class="search-icon" aria-hidden="true"></span>
+    <!-- SEARCH -->
+    <div class="search-bar">
+        <form class="search" action="{{ url_for('homepage') }}" method="GET">
+            <span class="search-icon"></span>
 
             <input 
-            class="search-input"
-            type="text" 
-            name="query"
-            placeholder="Search listing..."
-            value = "{{ search }}"
+                class="search-input"
+                type="text"
+                name="query"
+                placeholder="Search listing..."
+                value="{{ search }}"
             />
-            
-            <!-- Search button -->
-            <button type = "submit" class = "pill">Search</button>
+
+            <button type="submit" class="pill">Search</button>
         </form>
     </div>
 
-    <!-- Top Right button -->
-    <div class = "actions">
+    <!-- ACTIONS -->
+    <div class="actions">
 
-        <!-- Create Listing button-->
-        <a href = "{{ url_for('createListing') }}" 
-            class = "primary-btn" 
-            style = "text-decoration: none; display: inline-flex; align-items: center;"> + Create Listing
+        <a href="{{ url_for('createListing') }}" class="primary-btn"
+           style="text-decoration:none; display:inline-flex; align-items:center;">
+            + Create Listing
         </a>
 
-        <!-- Messages button -->
-        <button class = "icon-btn" aria-label = "Messages">
-            <i class = "fa-solid fa-envelope"></i>
+        <button class="icon-btn">
+            <i class="fa-solid fa-envelope"></i>
         </button>
 
-        <!-- Profile button -->
         <div class="dropdown">
-            <button class="icon-btn" aria-label="Profile">
+            <button class="icon-btn">
                 {% if user_data and user_data.avatarURL %}
-                    <img src="{{ user_data.avatarURL }}" alt="Profile" class="profile-img-icon">
+                    <img src="{{ user_data.avatarURL }}" class="profile-img-icon">
                 {% else %}
                     <i class="fa-solid fa-user"></i>
                 {% endif %}
@@ -73,75 +70,93 @@
                 <a href="{{ url_for('profile') }}">
                     <i class="fa-solid fa-id-card"></i> View Profile
                 </a>
-                <hr> 
+                <hr>
                 <a href="{{ url_for('logout') }}" class="logout-link">
                     <i class="fa-solid fa-right-from-bracket"></i> Log Out
                 </a>
             </div>
         </div>
 
-
     </div>
 </header>
 
-    <!-- Category buttons -->
-    <section class = "categories">
-        <button class = "pill" type = "button">Technology</button>
-        <button class = "pill" type = "button">Stationary</button>
-        <button class = "pill" type = "button">Textbooks</button>
-    </section>
+<!-- ================= CATEGORIES ================= -->
+<section class="categories">
+    <button class="pill">Technology</button>
+    <button class="pill">Stationary</button>
+    <button class="pill">Textbooks</button>
+</section>
 
-    <!-- Main portion of page where products are shown (changed to connect to supabase 4/7)-->
-     <main class = "page">
-        <div class = "container">
-      <h2 class = "page-title">Products</h2>
-      
-      <!-- Product grid -->
-       <section class = "grid">
-        
-        {% if listings %}
-            {% for listing in listings %}
-            <article class = "card">
+<!-- ================= LISTINGS ================= -->
+<main class="page">
+    <div class="container">
 
-                <div class = "card-media">
-                    {%if listing.display_photos %}
-                        <img
-                            class = "card-image"
-                            src = "{{ listing.display_photos }}"
-                            alt = "{{ listing.title }}"
-                        />
-                    {% else %}
-                        <img
-                            class = "card-image"
-                            src = "{{ url_for('static', filename='img/hawkLogo.svg') }}"
-                            alt = "Default Product Image"
-                        />
-                    {% endif %}
-                </div>
+        <h2 class="page-title">Products</h2>
 
-                <div class = "card-body">
-                    <div class = "card-title">{{ listing.title }}</div>
-                    <div class = "card-price">${{ listing.price }}</div>
+        <section class="grid">
 
-                    {% if listing.description %}
-                        <div class = "card-description">{{ listing.description }}</div>
-                    {% endif %}
+            {% if listings %}
 
-                    {%if listing.status %}
-                        <div class = "card-status">Status: {{ listing.status }}</div>
-                    {% endif %}
+                {% for listing in listings %}
+                <article class="card">
 
-                    {% if listing.category %}
-                        <div class="card-category">Category: {{ listing.category }}</div>
-                    {% endif %}
+                    <!-- HEART BUTTON -->
+                    <form method="POST"
+                          action="/toggle-save/{{ listing.id }}"
+                          class="heart-form">
 
-                </div>
-            </article>
-            {% endfor %}
+                        <button type="submit" class="icon-btn" style="position:absolute; margin:10px;">
+                            {% if listing.is_saved %}
+                                <i class="fa-solid fa-heart" style="color:red;"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart"></i>
+                            {% endif %}
+                        </button>
 
-        {% else %}
-            <p>No listings found.</p>
-        {% endif %} 
+                    </form>
+
+                    <div class="card-media">
+
+                        {% if listing.display_photos %}
+                            <img class="card-image"
+                                 src="{{ listing.display_photos }}"
+                                 alt="{{ listing.title }}">
+                        {% else %}
+                            <img class="card-image"
+                                 src="{{ url_for('static', filename='img/hawkLogo.svg') }}">
+                        {% endif %}
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="card-title">{{ listing.title }}</div>
+                        <div class="card-price">${{ listing.price }}</div>
+
+                        {% if listing.description %}
+                            <div class="card-description">{{ listing.description }}</div>
+                        {% endif %}
+
+                        {% if listing.status %}
+                            <div class="card-status">Status: {{ listing.status }}</div>
+                        {% endif %}
+
+                        {% if listing.category %}
+                            <div class="card-category">Category: {{ listing.category }}</div>
+                        {% endif %}
+
+                    </div>
+
+                </article>
+                {% endfor %}
+
+            {% else %}
+                <p>No listings found.</p>
+            {% endif %}
+
         </section>
-    </main>
+    </div>
+</main>
+
 </body>
+</html>
