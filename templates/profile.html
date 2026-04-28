@@ -198,8 +198,27 @@
                     </div>
 
                     <div class="card-body">
+                        <form method="GET"
+                        action="/edit-listing/{{ listing.id }}"
+                        class="edit-form">
+
+                        <button type="submit" class="edit-btn">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        </form>
+
                         <div class="card-title">{{ listing.title }}</div>
                         <div class="card-price">${{ listing.price }}</div>
+                        <form method="POST"
+                        action="/delete-listing/{{ listing.id }}"
+                        onsubmit="return confirmDelete(event, '{{ listing.title }}')"
+                        class="delete-form">
+
+                        <button type="submit" class="delete-btn">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        </form>
+                        
                     </div>
 
                 </a>
@@ -213,50 +232,51 @@
 
     </div>
 
-    <!-- ================= SAVED LISTINGS ================= -->
-    <div id="savedListings" class="grid" style="display:none;">
+<!-- ================= SAVED LISTINGS ================= -->
+<div id="savedListings" class="grid" style="display:none;">
 
-        {% if saved_listings and saved_listings|length > 0 %}
+    {% if saved_listings and saved_listings|length > 0 %}
 
-            {% for listing in saved_listings %}
-            <article class="card">
+        {% for listing in saved_listings %}
+        <article class="card">
+            
+            <div class="card-media">
 
-                <!-- HEART BUTTON (same as homepage) -->
-                <form method="POST"
-                      action="/toggle-save/{{ listing.id }}"
-                      class="heart-form">
-
-                    <button type="submit" class="icon-btn" style="position:absolute; margin:10px;">
-                        <i class="fa-solid fa-heart" style="color:red;"></i>
-                    </button>
-
-                </form>
+                <!-- HEART BUTTON (now inside media = safe + visible) -->
+                <form method="POST" action="/toggle-save/{{ listing.id }}" class="heart-form">
+                        <button type="submit" class="heart-btn">
+                            {% if listing.is_saved %}
+                                <i class="fa-solid fa-heart"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart"></i>
+                            {% endif %}
+                        </button>
+                    </form>
 
                 <a href="{{ url_for('listing_detail', listing_id=listing.id) }}">
 
-                    <div class="card-media">
-                        {% if listing.photos and listing.photos|length > 0 %}
-                            <img class="card-image" src="{{ listing.photos[0] }}">
-                        {% else %}
-                            <img class="card-image" src="{{ url_for('static', filename='img/hawkLogo.svg') }}">
-                        {% endif %}
-                    </div>
-
-                    <div class="card-body">
-                        <div class="card-title">{{ listing.title }}</div>
-                        <div class="card-price">${{ listing.price }}</div>
-                    </div>
+                    {% if listing.photos and listing.photos|length > 0 %}
+                        <img class="card-image" src="{{ listing.photos[0] }}">
+                    {% else %}
+                        <img class="card-image"
+                            src="{{ url_for('static', filename='img/hawkLogo.svg') }}">
+                    {% endif %}
 
                 </a>
 
-            </article>
-            {% endfor %}
+            </div>
 
-        {% else %}
-            <p>No saved listings yet.</p>
-        {% endif %}
+            <div class="card-body">
+                <div class="card-title">{{ listing.title }}</div>
+                <div class="card-price">${{ listing.price }}</div>
+            </div>
 
-    </div>
+        </article>
+        {% endfor %}
+
+    {% else %}
+        <p>No saved listings yet.</p>
+    {% endif %}
 
 </div>
 
@@ -292,6 +312,17 @@ function editProfile(){
         form.style.display = "none";
         top.style.display = "flex";
     }
+}
+
+function confirmDelete(event, title) {
+    const confirmed = confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`);
+
+    if (!confirmed) {
+        event.preventDefault();
+        return false;
+    }
+
+    return true;
 }
 
 </script>

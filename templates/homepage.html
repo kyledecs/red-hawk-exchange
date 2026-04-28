@@ -99,22 +99,15 @@
 
                 {% for listing in listings %}
                 <article class="card">
-
-                    <!-- HEART BUTTON -->
-                    <form method="POST"
-                          action="/toggle-save/{{ listing.id }}"
-                          class="heart-form">
-
-                        <button type="submit" class="icon-btn" style="position:absolute; margin:10px;">
+                    <form method="POST" action="/toggle-save/{{ listing.id }}" class="heart-form">
+                        <button type="submit" class="heart-btn">
                             {% if listing.is_saved %}
-                                <i class="fa-solid fa-heart" style="color:red;"></i>
+                                <i class="fa-solid fa-heart"></i>
                             {% else %}
                                 <i class="fa-regular fa-heart"></i>
                             {% endif %}
                         </button>
-
                     </form>
-
                     <div class="card-media">
 
                         {% if listing.display_photos %}

@@ -155,6 +155,57 @@ def homepage():
         search=search,
         user_data=user_data
     )
+
+@app.route("/edit-listing/<listing_id>")
+def edit_listing(listing_id):
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    user_id = session.get("userID")
+
+    res = supabase.table("listings") \
+        .select("*") \
+        .eq("id", listing_id) \
+        .single() \
+        .execute()
+
+    listing = res.data
+
+    # SECURITY: make sure user owns it
+    if listing["lister_id"] != user_id:
+        return "Unauthorized", 403
+
+    return render_template("edit_listing.html", listing=listing)
+
+@app.route("/update-listing/<listing_id>", methods=["POST"])
+def update_listing(listing_id):
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    user_id = session.get("userID")
+
+    # SECURITY CHECK
+    listing = supabase.table("listings") \
+        .select("lister_id") \
+        .eq("id", listing_id) \
+        .single() \
+        .execute()
+
+    if listing.data["lister_id"] != user_id:
+        return "Unauthorized", 403
+
+    update_data = {
+        "title": request.form.get("title"),
+        "price": request.form.get("price"),
+    }
+
+    supabase.table("listings") \
+        .update(update_data) \
+        .eq("id", listing_id) \
+        .execute()
+
+    return redirect("/profile")
+
 # ------------ CREATE LISTING --------------
 @app.route("/createListing", methods=['GET','POST'])
 def createListing():
@@ -196,6 +247,37 @@ def createListing():
         return redirect("/homepage")
 
     return render_template("createListing.html")
+
+@app.route("/delete-listing/<listing_id>", methods=["POST"])
+def delete_listing(listing_id):
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    user_id = session.get("userID")
+
+    # confirm ownership using lister_id
+    listing = supabase.table("listings") \
+        .select("*") \
+        .eq("id", listing_id) \
+        .eq("lister_id", user_id) \
+        .execute()
+
+    if not listing.data:
+        return "Not allowed", 403
+
+    # delete listing
+    supabase.table("listings") \
+        .delete() \
+        .eq("id", listing_id) \
+        .execute()
+
+    # optional cleanup: remove saved entries
+    supabase.table("savedListings") \
+        .delete() \
+        .eq("listingID", listing_id) \
+        .execute()
+
+    return redirect("/profile")
 
 # ------------ PROFILE --------------
 @app.route("/profile")
