@@ -210,6 +210,8 @@ def message_seller(listing_id, seller_id):
     if 'user_id' not in session:
         return redirect(url_for('login_page'))
 
+    current_user_id = session['user_id']
+
     seller_response = supabase.table('profiles') \
         .select('displayName, avatarURL') \
         .eq('id', seller_id) \
@@ -220,23 +222,39 @@ def message_seller(listing_id, seller_id):
 
     seller_username = "User"
     seller_avatar = None
-    
-    if seller:
-        if seller.get("displayName"):
-            seller_username = seller["displayName"]
-        if seller.get("avatarURL"):
-            seller_avatar = seller["avatarURL"]
 
-    
+    if seller:
+        seller_username = seller.get("displayName") or "User"
+        seller_avatar = seller.get("avatarURL")
+
+    messages_response = supabase.table('messages') \
+        .select('*') \
+        .eq('listing_id', listing_id) \
+        .or_(
+            f'and(sender_id.eq.{current_user_id},receiver_id.eq.{seller_id}),'
+            f'and(sender_id.eq.{seller_id},receiver_id.eq.{current_user_id})'
+        ) \
+        .order('created_at', desc=False) \
+        .execute()
+
+    messages = messages_response.data if messages_response.data else []
+
+    for msg in messages:
+        if msg['sender_id'] == current_user_id:
+            msg['sender_username'] = "You"
+            msg['bubble_class'] = "my-bubble"
+        else:
+            msg['sender_username'] = seller_username
+            msg['bubble_class'] = "seller-bubble"
+
     return render_template(
         'message.html',
         listing_id=listing_id,
         seller_id=seller_id,
         seller_username=seller_username,
-        seller_avatar=seller_avatar
+        seller_avatar=seller_avatar,
+        messages=messages
     )
-
-
 
 # ---------------- SEND MESSAGE ----------------
 @app.route('/send_message', methods=['POST'])
@@ -257,7 +275,11 @@ def send_message():
             'message': message
         }).execute()
 
-    return redirect(url_for('inbox'))
+    return redirect(url_for(
+    'message_seller',
+    listing_id=listing_id,
+    seller_id=receiver_id
+))
 
 
 # ---------------- INBOX ----------------

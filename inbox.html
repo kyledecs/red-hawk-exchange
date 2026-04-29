@@ -67,17 +67,12 @@
         </aside>
 
         <section class="chat-preview">
-            {% if messages %}
-                {% for msg in messages %}
-                    <div class="message-meta">
-                        From: {{ msg.sender_id }}
-                    </div>
-
-                    <div class="message-bubble">
-                        {{ msg.message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+            <div class="empty-chat">
+                <div class="empty-chat-icon">
+                    <i class="fa-solid fa-comment-dots"></i>
+                </div>
+                <p>Select a conversation to keep messaging.</p>
+            </div>
         </section>
 
     </div>

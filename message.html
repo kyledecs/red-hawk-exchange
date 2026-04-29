@@ -29,15 +29,33 @@
             </div>
         </div>
 
-        <a class="back-link" href="{{ url_for('homepage') }}">
+        <a class="back-link" href="{{ url_for('inbox') }}">
             <i class="fa-solid fa-arrow-left"></i> Back
         </a>
     </div>
 
     <div class="chat-container">
-        <div class="chat-bubble seller-bubble">
-            Hi! Send a message about this listing.
-        </div>
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="chat-row {% if msg.sender_username == 'You' %}sent-row{% else %}received-row{% endif %}">
+                    <div>
+                        <div class="message-meta">
+                            {{ msg.sender_username }}
+                        </div>
+
+                        <div class="chat-bubble {{ msg.bubble_class }}">
+                            {{ msg.message }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="chat-row received-row">
+                <div class="chat-bubble seller-bubble">
+                    Hi! Send a message about this listing.
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     <div class="message-form-area">
