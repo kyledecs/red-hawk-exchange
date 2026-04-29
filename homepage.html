@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,61 +10,107 @@
 
 <body>
 
-    <!--Header section for left side-->
-    <header class = "header">
-        <div class = "brand">
-            <!-- Change to actual logo picture path -->
-            <img
-                class = "brand-logo"
-                src = "{{ url_for('static', filename='img/hawkLogo.svg') }}" 
-                alt = "RedHawk Exchange Logo"
-            />
+<!--Header section for left side-->
+<header class = "header">
+    <div class = "brand">
+        <a href="{{url_for('homepage')}}">
+        <img
+            class = "brand-logo"
+            src = "{{ url_for('static', filename='img/hawkLogo.svg') }}" 
+            alt = "RedHawk Exchange Logo"
+        />
+        </a>
 
-            <div class = "brand-name">
-                <span class = "brand-redhawk">RedHawk</span>
-                <span class = "brand-exchange">Exchange</span>
+        <div class = "brand-name">
+            <span class = "brand-redhawk">RedHawk</span>
+            <span class = "brand-exchange">Exchange</span>
+        </div>
+    </div>
+
+    <!-- Search Bar Functionality -->
+    <div class = "search-bar">
+        <form class = "search" action="{{ url_for('homepage') }}" method="GET">
+            <span class="search-icon" aria-hidden="true"></span>
+
+            <input 
+            class="search-input"
+            type="text" 
+            name="query"
+            placeholder="Search listing..."
+            value = "{{ search }}"
+            />
+            
+            <!-- Search button -->
+            <button type = "submit" class = "pill">Search</button>
+        </form>
+    </div>
+
+    <!-- Top Right button -->
+    <div class = "actions">
+
+        <!-- Create Listing button-->
+        <a href = "{{ url_for('createListing') }}" 
+            class = "primary-btn" 
+            style = "text-decoration: none; display: inline-flex; align-items: center;"> + Create Listing
+        </a>
+
+        <!-- Messages button -->
+        <a href="{{ url_for('inbox') }}">
+            <button class="icon-btn" type="button" aria-label="Inbox">
+                <i class="fa-solid fa-envelope"></i>
+            </button>
+        </a>
+
+        <!-- Profile button -->
+        <div class="dropdown">
+            <button class="icon-btn" aria-label="Profile">
+                {% if user_data and user_data.avatarURL %}
+                    <img src="{{ user_data.avatarURL }}" alt="Profile" class="profile-img-icon">
+                {% else %}
+                    <i class="fa-solid fa-user"></i>
+                {% endif %}
+            </button>
+
+            <div class="dropdown-content">
+                <a href="{{ url_for('profile') }}">
+                    <i class="fa-solid fa-id-card"></i> View Profile
+                </a>
+                <hr> 
+                <a href="{{ url_for('logout') }}" class="logout-link">
+                    <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                </a>
             </div>
         </div>
 
-        <!-- Search Bar -->
-         <div class = "search-bar">
-            <div class = "search">
-                <span class = "search-icon" aria-hidden = "true"></span>
-                <input 
-                  class="search-input"
-                  type="text" 
-                  placeholder="Search listing..."
-                />
-            </div>
-         </div>
 
-         <!-- Top Right button -->
-          <div class = "actions">
-
-            <!-- Creat Listing button-->
-             <button class = "primary-btn">Create Listing</button>
-
-            <!-- Messages button -->
-            <button class = "icon-btn" aria-label = "Messages">
-                <i class = "fa-solid fa-envelope"></i>
-            </button>
-
-            <!-- Profile button -->
-             <button class = "icon-btn" aria-label = "Profile">
-                <i class = "fa-solid fa-user"></i>
-             </button>
-
-          </div>
-    </header>
+    </div>
+</header>
 
     <!-- Category buttons -->
-    <section class = "categories">
-        <button class = "pill" type = "button">Technology</button>
-        <button class = "pill" type = "button">Stationary</button>
-        <button class = "pill" type = "button">Textbooks</button>
+    <section class="categories">
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <button class="pill" type="submit">All</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Technology">
+            <button class="pill" type="submit">Technology</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Stationary">
+            <button class="pill" type="submit">Stationary</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Textbooks">
+            <button class="pill" type="submit">Textbooks</button>
+        </form>
+
     </section>
 
-    <!-- Main portion of page where products are shown (Hardcoded data not connected)-->
+    <!-- Main portion of page where products are shown (changed to connect to supabase 4/7)-->
      <main class = "page">
         <div class = "container">
       <h2 class = "page-title">Products</h2>
@@ -73,73 +118,108 @@
       <!-- Product grid -->
        <section class = "grid">
         
-        <article class = "card">
-            <!-- Card 1-->
-            <div class = "card-media">
-                <!-- Change to actual product image path -->
-                <img
-                    class = "card-image"
-                    src = "{{ url_for('static', filename='img/macbook.jpeg') }}" 
-                    alt = "Product Image"
-                />
-            </div>
+        {% if listings %}
+            {% for listing in listings %}
+            <article 
+                class="card"
+                data-title="{{ listing.title }}"
+                data-price="{{ listing.price }}"
+                data-description="{{ listing.description }}"
+                data-status="{{ listing.status }}"
+                data-category="{{ listing.category }}"
+                data-image="{{ listing.display_photos }}"
+                data-messageurl="{{ url_for('message_seller', listing_id=listing.id, seller_id=listing.lister_id) }}"
+                onclick="openListingModal(
+                    this.dataset.title,
+                    this.dataset.price,
+                    this.dataset.description,
+                    this.dataset.status,
+                    this.dataset.category,
+                    this.dataset.image,
+                    this.dataset.messageurl
+                )"
+            >
 
-            <div class = "card-body">
-                <div class = "card-name">Macbook Pro</div>
-                <div class = "card-price">$1200</div>
-            </div>
-        </article>
+                <div class = "card-media">
+                    {%if listing.display_photos %}
+                        <img
+                            class = "card-image"
+                            src = "{{ listing.display_photos }}"
+                            alt = "{{ listing.title }}"
+                        />
+                    {% else %}
+                        <img
+                            class = "card-image"
+                            src = "{{ url_for('static', filename='img/hawkLogo.svg') }}"
+                            alt = "Default Product Image"
+                        />
+                    {% endif %}
+                </div>
 
-        <article class = "card">
-            <!-- Card 2-->
-            <div class = "card-media">
-                <!-- Change to actual product image path -->
-                <img
-                    class = "card-image"
-                    src = "{{ url_for('static', filename='img/textbook.jpg.webp') }}" 
-                    alt = "Product Image"
-                />
-            </div>
+                <div class = "card-body">
+                    <div class = "card-title">{{ listing.title }}</div>
+                    <div class = "card-price">${{ listing.price }}</div>
 
-            <div class = "card-body">
-                <div class = "card-name">Math Textbook</div>
-                <div class = "card-price">$55</div>
-            </div>
-        </article>
+                    {% if listing.description %}
+                        <div class = "card-description">{{ listing.description }}</div>
+                    {% endif %}
 
-       <article class = "card">
-            <!-- Card 3-->
-            <div class = "card-media">
-                <!-- Change to actual product image path -->
-                <img
-                    class = "card-image"
-                    src = "{{ url_for('static', filename='img/calculator.avif') }}" 
-                    alt = "Product Image"
-                />
-            </div>
+                    {%if listing.status %}
+                        <div class = "card-status">Status: {{ listing.status }}</div>
+                    {% endif %}
 
-            <div class = "card-body">
-                <div class = "card-name">Calculator</div>
-                <div class = "card-price">$60</div>
-            </div>
-        </article>
+                    {% if listing.category %}
+                        <div class="card-category">Category: {{ listing.category }}</div>
+                    {% endif %}
 
-        <article class = "card">
-            <!-- Card 4-->
-            <div class = "card-media">
-                <!-- Change to actual product image path -->
-                <img
-                    class = "card-image"
-                    src = "{{ url_for('static', filename='img/iphone12.jpg.webp') }}"
-                    alt = "Product Image"
-                />
-            </div>
+                </div>
+            </article>
+            {% endfor %}
 
-            <div class = "card-body">
-                <div class = "card-name">iPhone 12</div>
-                <div class = "card-price">$800</div>
+        {% else %}
+            <p>No listings found.</p>
+        {% endif %} 
+        </section>
+
+        <div id = "listingModal" class = "modal">
+            <div class = "modal-content">
+                 <button class="close-btn" onclick="closeListingModal()">×</button>
+
+                <img id="modalImage" class="modal-image" src="" alt="Listing Image">
+
+                <h2 id="modalTitle"></h2>
+                <p id="modalPrice" class="modal-price"></p>
+                <p id="modalDescription"></p>
+                <p id="modalStatus"></p>
+                <p id="modalCategory"></p>
+
+                <a id="messageSellerLink" href="#">
+                    <button class="message-btn-small">Message Seller</button>
+                </a>
             </div>
         </div>
-        </section>
     </main>
+    <script>
+        function openListingModal(title, price, description, status, category, image, messageUrl) {
+            document.getElementById("modalTitle").textContent = title;
+            document.getElementById("modalPrice").textContent = "$" + price;
+            document.getElementById("modalDescription").textContent = description || "No description provided.";
+            document.getElementById("modalStatus").textContent = status ? "Status: " + status : "";
+            document.getElementById("modalCategory").textContent = category ? "Category: " + category : "";
+
+            if (image) {
+                document.getElementById("modalImage").src = image;
+            } else {
+                document.getElementById("modalImage").src = "{{ url_for('static', filename='img/hawkLogo.svg') }}";
+            }
+
+            document.getElementById("messageSellerLink").href = messageUrl;
+
+            document.getElementById("listingModal").style.display = "flex";
+        }
+
+        function closeListingModal() {
+            document.getElementById("listingModal").style.display = "none";
+        }
+    </script>
 </body>
