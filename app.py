@@ -92,15 +92,20 @@ def login():
     session["email"] = response.user.email
     session["userID"] = response.user.id
 
-    # ✅ AUTO-CREATE PROFILE IF NOT EXISTS
-    supabase.table("profiles").upsert({
+    user_data = {
         "id": response.user.id,
         "email": response.user.email
-    }).execute()
+    }
+    profile = supabase.table("profiles").select("displayName").eq("id", response.user.id).execute()
+
+    if not profile.data or not profile.data[0].get("displayName"):
+        user_data["displayName"] = email.split('@')[0]
+
+    # AUTO-CREATE PROFILE IF NOT EXISTS
+    supabase.table("profiles").upsert(user_data).execute()
 
     return redirect("/homepage")
 
-# ---------------- HOMEPAGE ----------------
 # ---------------- HOMEPAGE ----------------
 @app.route("/homepage")
 def homepage():
@@ -108,11 +113,11 @@ def homepage():
         return redirect("/login-page")
     
     user_id = session.get("userID")
-
     response = supabase.table("profiles").select("*").eq("id", user_id).execute()
     user_data = response.data[0] if response.data else {}
 
     search = request.args.get("query", "").strip()
+    category_filter = request.args.get("category", "").strip()
 
     try:
         query = (
@@ -124,26 +129,15 @@ def homepage():
         if search:
             query = query.or_(f"title.ilike.%{search}%,description.ilike.%{search}%")
 
+        # Category button filtering
+        if category_filter:
+            query = query.eq("category", category_filter)
+
         response = query.execute()
         listings = response.data if response.data else []
         
-        # ---------------- IMAGE FIX ----------------
         for listing in listings:
             listing["display_photos"] = get_first_photo(listing.get("photos"))
-
-        # ---------------- HEART (SAVED STATE) ----------------
-        saved_ids = set()
-
-        saved_res = supabase.table("savedListings") \
-            .select("listingID") \
-            .eq("userID", user_id) \
-            .execute()
-
-        if saved_res.data:
-            saved_ids = {item["listingID"] for item in saved_res.data}
-
-        for listing in listings:
-            listing["is_saved"] = listing["id"] in saved_ids
 
     except Exception as e:
         print("Homepage Error:", e)
@@ -151,6 +145,7 @@ def homepage():
 
     return render_template(
         "homepage.html",
+        email=session.get("email"),
         listings=listings,
         search=search,
         user_data=user_data
@@ -162,6 +157,9 @@ def edit_listing(listing_id):
         return redirect("/login-page")
 
     user_id = session.get("userID")
+
+    response = supabase.table("profiles").select("*").eq("id", user_id).execute()
+    user_data = response.data[0] if response.data else {}
 
     res = supabase.table("listings") \
         .select("*") \
@@ -175,7 +173,7 @@ def edit_listing(listing_id):
     if listing["lister_id"] != user_id:
         return "Unauthorized", 403
 
-    return render_template("edit_listing.html", listing=listing)
+    return render_template("edit_listing.html", listing=listing, user_data=user_data)
 
 @app.route("/update-listing/<listing_id>", methods=["POST"])
 def update_listing(listing_id):
@@ -183,20 +181,54 @@ def update_listing(listing_id):
         return redirect("/login-page")
 
     user_id = session.get("userID")
+    response = supabase.table("profiles").select("*").eq("id", user_id).execute()
+    user_data = response.data[0] if response.data else {}
 
     # SECURITY CHECK
     listing = supabase.table("listings") \
-        .select("lister_id") \
+        .select("lister_id", "photos") \
         .eq("id", listing_id) \
         .single() \
         .execute()
 
     if listing.data["lister_id"] != user_id:
         return "Unauthorized", 403
+    
+    photosURLS = listing.data.get("photos", [])
+
+    # 3. Check if new photos were uploaded
+    uploaded_files = request.files.getlist("photos")
+
+    if uploaded_files and uploaded_files[0].filename != '':
+        new_photo_urls = []
+        
+        for file in uploaded_files:
+            file_extension = file.filename.rsplit('.', 1)[1]
+            unique_name = f"{uuid.uuid4()}.{file_extension}"
+            path_supabase = f"{user_id}/{unique_name}"
+            
+            file_data = file.read()
+            supabase.storage.from_("listingPhotos").upload(
+                path=path_supabase,
+                file=file_data,
+                file_options={'content-type': file.content_type}
+            )
+            
+            # Get public URL and add to our new list
+            url_res = supabase.storage.from_("listingPhotos").get_public_url(path_supabase)
+            new_photo_urls.append(url_res)
+        
+        # REPLACE the old photos with the new ones
+        photosURLS = new_photo_urls
 
     update_data = {
         "title": request.form.get("title"),
         "price": request.form.get("price"),
+        "status": request.form.get("status"),
+        'description': request.form.get("description"),
+        'category': request.form.get("category"),
+        'condition': request.form.get("condition"),
+        'photos': photosURLS
     }
 
     supabase.table("listings") \
@@ -212,6 +244,10 @@ def createListing():
     if not session.get("logged_in"):
         return redirect("/login-page")
     
+    user_id = session.get("userID")
+    response = supabase.table("profiles").select("*").eq("id", user_id).execute()
+    user_data = response.data[0] if response.data else {}
+
     if request.method == 'POST':
         listerID = session.get('userID')
         
@@ -240,13 +276,16 @@ def createListing():
             "price": request.form.get("price"),
             "status": "Available",
             "photos": photoURLS,
+            "condition" : request.form.get("condition"),
+            "description": request.form.get("description"),
+            'category': request.form.get("category")
         }
         
         supabase.table("listings").insert(newListing).execute()
         
         return redirect("/homepage")
 
-    return render_template("createListing.html")
+    return render_template("createListing.html", user_data=user_data)
 
 @app.route("/delete-listing/<listing_id>", methods=["POST"])
 def delete_listing(listing_id):
@@ -427,13 +466,66 @@ def logout():
 # ------------ Details page for listing ------------- #
 @app.route("/listing/<listing_id>")
 def listing_detail(listing_id):
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    user_id = session.get("userID")
+    response = supabase.table("profiles").select("*").eq("id", user_id).execute()
+    user_data = response.data[0] if response.data else {}
+
     listing = supabase.table("listings") \
         .select("*") \
         .eq("id", listing_id) \
         .single() \
         .execute()
+    
+    profilesListing = supabase.table("profiles") \
+                .select("id", "displayName", "avatarURL") \
+                .eq("id", listing.data['lister_id']) \
+                .execute()
+    
+    listing_map = {p["id"]: p['displayName'] for p in profilesListing.data}
 
-    return render_template("listing.html", listing=listing.data)
+    listing.data["lister_name"] = listing_map.get(listing.data['lister_id'], "Unknown User")
+    
+    comments =  supabase.table("comments") \
+                .select("*") \
+                .eq("listing_id", listing_id) \
+                .order("created_at", desc=True) \
+                .execute()
+    
+    profiles = supabase.table("profiles") \
+                .select("id", "displayName", "avatarURL") \
+                .in_("id", [comment["user_id"] for comment in comments.data]) \
+                .execute()
+    
+    # 1. Create a dictionary for quick lookup: { "user_id": "displayName" }
+    comment_map = {p["id"]: p["displayName"] for p in profiles.data}
+
+    # 2. Attach the name to each comment
+    for comment in comments.data:
+        comment["name"] = comment_map.get(comment["user_id"], "Unknown User")
+
+    # 3. Send to template
+    return render_template("listing.html", listing=listing.data, comments=comments.data, user_data=user_data)
+
+@app.route("/addComment/<listing_id>", methods=["POST"])
+def addComment(listing_id):
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    user_id = session.get("userID")
+    comment_content = request.form.get("comment")
+
+    supabase.table("comments") \
+        .insert({
+            "user_id": str(user_id),
+            "listing_id": listing_id,
+            "content": comment_content
+        }) \
+        .execute()
+
+    return redirect(request.referrer or f"/listing/{listing_id}")
 
 # ----------- ERROR --------------
 @app.errorhandler(413)

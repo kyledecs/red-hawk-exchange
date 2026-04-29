@@ -10,15 +10,12 @@
 
 <body class="centered-form-page">
 
- <!--Header section for left side-->
     <header class = "header">
         <div class = "brand">
             <a href="{{url_for('homepage')}}">
-            <img
-                class = "brand-logo"
+            <img class = "brand-logo"
                 src = "{{ url_for('static', filename='img/hawkLogo.svg') }}" 
-                alt = "RedHawk Exchange Logo"
-            />
+                alt = "RedHawk Exchange Logo" />
             </a>
 
             <div class = "brand-name">
@@ -85,26 +82,29 @@
                     <div style="display: flex; gap: 20px; margin-bottom: 20px;">
                         <div style="flex: 1;">
                             <label class="card-name">Category</label>
-                            <select class="custom-input">
-                                <option value="technology">Technology</option> <!-- Placeholder Values -->
-                                <option value="textbooks">Textbooks</option>
-                                <option value="stationary">Stationary</option>
+                            <select class="custom-input" name="category">
+                                <option value="Technology">Technology</option> <!-- Placeholder Values -->
+                                <option value="Textbooks">Textbooks</option>
+                                <option value="Stationary">Stationary</option>
+                                <option value="Apparel">Apparel</option> 
+                                <option value="Decor">Decor</option>
+                                <option value="Miscellaneous">Miscellaneous</option>
                             </select>
                         </div>
                         <div style="flex: 1;">
                             <label class="card-name">Condition</label>
-                            <select class="custom-input">
-                                <option value="new">New</option>
-                                <option value="like-new">Like New</option>
-                                <option value="good">Used - Good</option>
-                                <option value="fair">Used - Fair</option>
+                            <select class="custom-input" name="condition">
+                                <option value="New">New</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Used - Good">Used - Good</option>
+                                <option value="Used - Fair">Used - Fair</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="card-name">Description</label>
-                        <textarea class="custom-input" rows="5" placeholder="Descibe your item to potential buyers..."></textarea>
+                        <input name="description" type="text" class="custom-input" rows="5" placeholder="Describe your item...">
                     </div>
 
                     <div class="form-group">

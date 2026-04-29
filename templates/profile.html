@@ -168,7 +168,7 @@
 
     <!-- ================= TABS ================= -->
     <div class="tabs">
-
+        {% if session.userID == user_data.id %}
         <button class="tab active-tab" onclick="showActive()">
             Active Listings
         </button>
@@ -176,7 +176,7 @@
         <button class="tab" onclick="showSaved()">
             Saved Listings
         </button>
-
+        {% endif %}
     </div>
 
     <!-- ================= ACTIVE LISTINGS ================= -->
@@ -187,7 +187,7 @@
             {% for listing in listings %}
             <article class="card">
 
-                <a href="{{ url_for('listing_detail', listing_id=listing.id) }}">
+                <a href="{{ url_for('listing_detail', listing_id=listing.id) }}" class="plain-link">
 
                     <div class="card-media">
                         {% if listing.photos and listing.photos|length > 0 %}
@@ -197,6 +197,7 @@
                         {% endif %}
                     </div>
 
+                    {% if session.userID == user_data.id %}
                     <div class="card-body">
                         <form method="GET"
                         action="/edit-listing/{{ listing.id }}"
@@ -220,6 +221,7 @@
                         </form>
                         
                     </div>
+                    {% endif %}
 
                 </a>
 

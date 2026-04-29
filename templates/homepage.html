@@ -81,11 +81,43 @@
 </header>
 
 <!-- ================= CATEGORIES ================= -->
-<section class="categories">
-    <button class="pill">Technology</button>
-    <button class="pill">Stationary</button>
-    <button class="pill">Textbooks</button>
-</section>
+    <section class="categories">
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <button class="pill" type="submit">All</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Technology">
+            <button class="pill" type="submit">Technology</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Stationary">
+            <button class="pill" type="submit">Stationary</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Textbooks">
+            <button class="pill" type="submit">Textbooks</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Apparel">
+            <button class="pill" type="submit">Apparel</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Decor">
+            <button class="pill" type="submit">Decor</button>
+        </form>
+
+        <form action="{{ url_for('homepage') }}" method="GET" style="display:inline;">
+            <input type="hidden" name="category" value="Miscellaneous">
+            <button class="pill" type="submit">Miscellaneous</button>
+        </form>
+
+    </section>
 
 <!-- ================= LISTINGS ================= -->
 <main class="page">
@@ -98,6 +130,7 @@
             {% if listings %}
 
                 {% for listing in listings %}
+                <a href="{{ url_for('listing_detail', listing_id=listing.id) }}" class="plain-link">
                 <article class="card">
                     <form method="POST" action="/toggle-save/{{ listing.id }}" class="heart-form">
                         <button type="submit" class="heart-btn">
@@ -138,9 +171,14 @@
                             <div class="card-category">Category: {{ listing.category }}</div>
                         {% endif %}
 
+                        {% if listing.condition %}
+                            <div class="card-condition">Condition: {{ listing.condition }}</div>
+                        {% endif %}
+
                     </div>
 
                 </article>
+                </a>
                 {% endfor %}
 
             {% else %}
