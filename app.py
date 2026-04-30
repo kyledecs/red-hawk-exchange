@@ -527,6 +527,128 @@ def addComment(listing_id):
 
     return redirect(request.referrer or f"/listing/{listing_id}")
 
+# ---------------- MESSAGE PAGE ----------------
+@app.route('/message/<listing_id>/<seller_id>')
+def message_seller(listing_id, seller_id):
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    current_user_id = session.get("userID")
+
+    seller_response = supabase.table('profiles') \
+        .select('displayName, avatarURL') \
+        .eq('id', seller_id) \
+        .single() \
+        .execute()
+
+    seller = seller_response.data
+
+    seller_username = "User"
+    seller_avatar = None
+
+    if seller:
+        seller_username = seller.get("displayName") or "User"
+        seller_avatar = seller.get("avatarURL")
+
+    messages_response = supabase.table('messages') \
+        .select('*') \
+        .eq('listing_id', listing_id) \
+        .or_(
+            f'and(sender_id.eq.{current_user_id},receiver_id.eq.{seller_id}),'
+            f'and(sender_id.eq.{seller_id},receiver_id.eq.{current_user_id})'
+        ) \
+        .order('created_at', desc=False) \
+        .execute()
+
+    messages = messages_response.data if messages_response.data else []
+
+    for msg in messages:
+        if msg['sender_id'] == current_user_id:
+            msg['sender_username'] = "You"
+            msg['bubble_class'] = "my-bubble"
+        else:
+            msg['sender_username'] = seller_username
+            msg['bubble_class'] = "seller-bubble"
+
+    return render_template(
+        'message.html',
+        listing_id=listing_id,
+        seller_id=seller_id,
+        seller_username=seller_username,
+        seller_avatar=seller_avatar,
+        messages=messages
+    )
+
+# ---------------- SEND MESSAGE ----------------
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    listing_id = request.form.get('listing_id')
+    receiver_id = request.form.get('receiver_id')
+    message = request.form.get('message')
+    sender_id = session.get("userID")
+    print("SenderUID:", sender_id)
+    print("ReceiverUID:", receiver_id)
+    print("ListingID:", listing_id)
+
+    if message and listing_id and receiver_id:
+        supabase.table('messages').insert({
+            'listing_id': listing_id,
+            'sender_id': sender_id,
+            'receiver_id': receiver_id,
+            'message': message
+        }).execute()
+
+    return redirect(url_for(
+    'message_seller',
+    listing_id=listing_id,
+    seller_id=receiver_id))
+
+
+# ---------------- INBOX ----------------
+@app.route('/inbox')
+def inbox():
+    if not session.get("logged_in"):
+        return redirect("/login-page")
+
+    user_id = session.get("userID")
+
+    response = supabase.table('messages') \
+        .select('*') \
+        .or_(f'sender_id.eq.{user_id},receiver_id.eq.{user_id}') \
+        .order('created_at', desc=True) \
+        .execute()
+
+    messages = response.data if response.data else []
+
+    conversations = {}
+
+    for msg in messages:
+        other_user = msg['receiver_id'] if msg['sender_id'] == user_id else msg['sender_id']
+        key = f"{msg['listing_id']}-{other_user}"
+
+        if key not in conversations:
+            profile_response = supabase.table('profiles') \
+                .select('displayName, avatarURL') \
+                .eq('id', other_user) \
+                .single() \
+                .execute()
+
+            profile = profile_response.data
+
+            msg['username'] = profile['displayName'] if profile and profile.get('displayName') else "User"
+            msg['avatar'] = profile['avatarURL'] if profile and profile.get('avatarURL') else None
+            msg['other_user_id'] = other_user
+
+            conversations[key] = msg
+
+    return render_template(
+        'inbox.html',
+        messages=list(conversations.values())
+    )
+
 # ----------- ERROR --------------
 @app.errorhandler(413)
 def request_entity_too_large(error):

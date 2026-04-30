@@ -939,3 +939,404 @@ textarea.custom-input {
     text-decoration: none;
     color: inherit;
 }
+
+/* Card pop-up */
+.card {
+    cursor: pointer;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    text-align: left;
+}
+
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    border: none;
+    background: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.modal-image {
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+.modal-price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #8b0000;
+}
+
+/* Inbox Page */
+
+.inbox-page,
+.message-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+}
+
+.inbox-header,
+.message-header {
+    background: #ffffff;
+    border-bottom: 1px solid #ddd;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.inbox-title,
+.message-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.inbox-icon,
+.seller-avatar,
+.conversation-avatar,
+.empty-chat-icon {
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.inbox-icon,
+.seller-avatar {
+    width: 42px;
+    height: 42px;
+}
+
+.conversation-avatar {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+}
+
+.empty-chat-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    font-size: 26px;
+}
+
+.inbox-title h1,
+.message-header h1 {
+    margin: 0;
+    color: #111;
+}
+
+.inbox-title h1 {
+    font-size: 22px;
+}
+
+.message-header h1 {
+    font-size: 20px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #111;
+    font-weight: 600;
+}
+
+.inbox-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    background: #ffffff;
+}
+
+.conversation-list {
+    border-right: 1px solid #ddd;
+    background: #fafafa;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.conversation-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 16px;
+    border-radius: 24px;
+    border: 1px solid #ddd;
+    outline: none;
+    margin-bottom: 16px;
+}
+
+.conversation-card {
+    display: block;
+    text-decoration: none;
+    color: #111;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid #eee;
+}
+
+.conversation-card:hover {
+    background: #f0f0f0;
+}
+
+.conversation-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.conversation-info {
+    width: 100%;
+    overflow: hidden;
+}
+
+.conversation-name {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.conversation-preview {
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-preview,
+.chat-container {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: #f5f5f5;
+}
+
+.chat-container {
+    flex: 1;
+}
+
+.empty-chat {
+    margin: auto;
+    text-align: center;
+    color: #666;
+}
+
+.message-bubble,
+.chat-bubble {
+    max-width: 60%;
+    padding: 14px 18px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    line-height: 1.4;
+}
+
+.message-bubble,
+.user-bubble {
+    background: var(--red);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+}
+
+.seller-bubble {
+    background: #e9e9e9;
+    color: #111;
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+}
+
+.message-meta {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 4px;
+    align-self: flex-end;
+}
+
+/* Message Page */
+.message-form-area {
+    background: #ffffff;
+    border-top: 1px solid #ddd;
+    padding: 18px 24px;
+}
+
+.message-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.message-input {
+    flex: 1;
+    resize: none;
+    border: 1px solid #ddd;
+    border-radius: 24px;
+    padding: 14px 18px;
+    font-size: 15px;
+    outline: none;
+    height: 48px;
+    font-family: inherit;
+}
+
+.message-input:focus {
+    border-color: var(--red);
+}
+
+.send-button {
+    border: none;
+    background: var(--red);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.send-button:hover {
+    background: var(--red-dark);
+}
+
+@media (max-width: 800px) {
+    .inbox-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .chat-preview {
+        display: none;
+    }
+
+    .conversation-list {
+        border-right: none;
+    }
+}
+
+/* ================= Message Button in Card Pop-Up ================= */
+
+.message-btn-small {
+    background: var(--red);
+    color: white;
+
+    border: none;
+    border-radius: 999px;
+
+    padding: 10px 16px;   
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.15s ease;
+
+    margin-top: 10px;
+}
+
+.message-btn-small:hover {
+    background: var(--red-dark);
+}
+
+.message-btn-small:active {
+    transform: scale(0.97);
+}
+
+/* Chat bubbles*/
+.chat-container {
+    flex: 1;
+    padding: 25px;
+    overflow-y: auto;
+    background: #f7f7f7;
+}
+
+.chat-row {
+    display: flex;
+    width: 100%;
+    margin-bottom: 14px;
+}
+
+.sent-row {
+    justify-content: flex-end;
+}
+
+.received-row {
+    justify-content: flex-start;
+}
+
+.message-meta {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 4px;
+}
+
+.sent-row .message-meta {
+    text-align: right;
+}
+
+.received-row .message-meta {
+    text-align: left;
+}
+
+.chat-bubble {
+    max-width: 420px;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 15px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.my-bubble {
+    background: #c8102e;
+    color: white;
+    border-bottom-right-radius: 6px;
+}
+
+.seller-bubble {
+    background: #e9e9e9;
+    color: #222;
+    border-bottom-left-radius: 6px;
+}
+
+/* Container for the modal buttons */
+.modal-actions {
+    display: flex;      
+    margin-top: 20px;   
+    align-items: center;
+}
+
+
+.modal-actions a {
+    text-decoration: none;
+    display: inline-block;
+}

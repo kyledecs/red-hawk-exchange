@@ -53,9 +53,12 @@
             + Create Listing
         </a>
 
-        <button class="icon-btn">
-            <i class="fa-solid fa-envelope"></i>
-        </button>
+        <!-- Messages button -->
+        <a href="{{ url_for('inbox') }}">
+            <button class="icon-btn" type="button" aria-label="Inbox">
+                <i class="fa-solid fa-envelope"></i>
+            </button>
+        </a>
 
         <div class="dropdown">
             <button class="icon-btn">
@@ -120,74 +123,132 @@
     </section>
 
 <!-- ================= LISTINGS ================= -->
-<main class="page">
-    <div class="container">
+<main class = "page">
+        <div class = "container">
+            <h2 class = "page-title">Products</h2>
+      
+      <!-- Product grid -->
+        <section class = "grid">
+        
+        {% if listings %}
+            {% for listing in listings %}
+            <article 
+                class="card"
+                data-title="{{ listing.title }}"
+                data-price="{{ listing.price }}"
+                data-description="{{ listing.description }}"
+                data-status="{{ listing.status }}"
+                data-category="{{ listing.category }}"
+                data-image="{{ listing.display_photos }}"
+                data-messageurl="{{ url_for('message_seller', listing_id=listing.id, seller_id=listing.lister_id) }}"
+                data-listingurl="{{ url_for('listing_detail', listing_id=listing.id) }}"
+                onclick="openListingModal(
+                    this.dataset.title,
+                    this.dataset.price,
+                    this.dataset.description,
+                    this.dataset.status,
+                    this.dataset.category,
+                    this.dataset.image,
+                    this.dataset.messageurl,
+                    this.dataset.listingurl
+                )"
+            >
 
-        <h2 class="page-title">Products</h2>
+                <div class = "card-media">
+                    {%if listing.display_photos %}
+                        <img
+                            class = "card-image"
+                            src = "{{ listing.display_photos }}"
+                            alt = "{{ listing.title }}"
+                        />
+                    {% else %}
+                        <img
+                            class = "card-image"
+                            src = "{{ url_for('static', filename='img/hawkLogo.svg') }}"
+                            alt = "Default Product Image"
+                        />
+                    {% endif %}
+                </div>
 
-        <section class="grid">
+                <div class = "card-body">
+                    <div class = "card-title">{{ listing.title }}</div>
+                    <div class = "card-price">${{ listing.price }}</div>
 
-            {% if listings %}
+                    {% if listing.description %}
+                        <div class = "card-description">{{ listing.description }}</div>
+                    {% endif %}
 
-                {% for listing in listings %}
-                <a href="{{ url_for('listing_detail', listing_id=listing.id) }}" class="plain-link">
-                <article class="card">
-                    <form method="POST" action="/toggle-save/{{ listing.id }}" class="heart-form">
-                        <button type="submit" class="heart-btn">
-                            {% if listing.is_saved %}
-                                <i class="fa-solid fa-heart"></i>
-                            {% else %}
-                                <i class="fa-regular fa-heart"></i>
-                            {% endif %}
-                        </button>
-                    </form>
-                    <div class="card-media">
+                    {%if listing.status %}
+                        <div class = "card-status">Status: {{ listing.status }}</div>
+                    {% endif %}
 
-                        {% if listing.display_photos %}
-                            <img class="card-image"
-                                 src="{{ listing.display_photos }}"
-                                 alt="{{ listing.title }}">
-                        {% else %}
-                            <img class="card-image"
-                                 src="{{ url_for('static', filename='img/hawkLogo.svg') }}">
-                        {% endif %}
+                    {% if listing.category %}
+                        <div class="card-category">Category: {{ listing.category }}</div>
+                    {% endif %}
 
-                    </div>
+                    {% if listing.condition %}
+                        <div class="card-category">Condition: {{ listing.condition }}</div>
+                    {% endif %}
 
-                    <div class="card-body">
+                </div>
+            </article>
+            {% endfor %}
 
-                        <div class="card-title">{{ listing.title }}</div>
-                        <div class="card-price">${{ listing.price }}</div>
-
-                        {% if listing.description %}
-                            <div class="card-description">{{ listing.description }}</div>
-                        {% endif %}
-
-                        {% if listing.status %}
-                            <div class="card-status">Status: {{ listing.status }}</div>
-                        {% endif %}
-
-                        {% if listing.category %}
-                            <div class="card-category">Category: {{ listing.category }}</div>
-                        {% endif %}
-
-                        {% if listing.condition %}
-                            <div class="card-condition">Condition: {{ listing.condition }}</div>
-                        {% endif %}
-
-                    </div>
-
-                </article>
-                </a>
-                {% endfor %}
-
-            {% else %}
-                <p>No listings found.</p>
-            {% endif %}
-
+        {% else %}
+            <p>No listings found.</p>
+        {% endif %} 
         </section>
-    </div>
-</main>
 
+        <div id = "listingModal" class = "modal">
+            <div class = "modal-content">
+                 <button class="close-btn" onclick="closeListingModal()">×</button>
+
+                <img id="modalImage" class="modal-image" src="" alt="Listing Image">
+
+                <h2 id="modalTitle"></h2>
+                <p id="modalPrice" class="modal-price"></p>
+                <p id="modalDescription"></p>
+                <p id="modalStatus"></p>
+                <p id="modalCategory"></p>
+
+                <div class='modal-actions'>
+                    <a id="messageSellerLink" href="#">
+                        <button class="message-btn-small">Message Seller</button>
+                    </a>
+
+                    <a id="ListingLink" href="#" style="margin-left: auto;">
+                        <button class="message-btn-small">More Info</button>
+                    </a>
+                </div>
+
+                </a>
+            </div>
+        </div>
+    </main>
+<script>
+    function openListingModal(title, price, description, status, category, image, messageUrl, listingUrl) {
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalPrice").textContent = "$" + price;
+        document.getElementById("modalDescription").textContent = description || "No description provided.";
+        document.getElementById("modalStatus").textContent = status ? "Status: " + status : "";
+        document.getElementById("modalCategory").textContent = category ? "Category: " + category : "";
+
+        if (image) {
+            document.getElementById("modalImage").src = image;
+        } else {
+            document.getElementById("modalImage").src = "{{ url_for('static', filename='img/hawkLogo.svg') }}";
+        }
+
+        document.getElementById("messageSellerLink").href = messageUrl;
+
+        document.getElementById("ListingLink").href = listingUrl;
+
+        document.getElementById("listingModal").style.display = "flex";
+    }
+
+    function closeListingModal() {
+        document.getElementById("listingModal").style.display = "none";
+    }
+</script>
 </body>
 </html>

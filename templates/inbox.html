@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="inbox-page">
+
+    <div class="inbox-header">
+        <div class="inbox-title">
+            <div class="inbox-icon">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+            <h1>Messages</h1>
+        </div>
+
+        <a class="back-link" href="{{ url_for('homepage') }}">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="inbox-layout">
+
+        <aside class="conversation-list">
+            <input class="conversation-search" type="text" placeholder="Search messages...">
+
+            {% if messages %}
+                {% for msg in messages %}
+                    <a class="conversation-card"
+                        href="{{ url_for('message_seller', listing_id=msg.listing_id, seller_id=msg.other_user_id) }}">
+
+                        <div class="conversation-top">
+                            <div class="conversation-avatar">
+                                {% if msg.avatar %}
+                                    <img src="{{ msg.avatar }}" alt="Profile" class="profile-img">
+                                {% else %}
+                                    <i class="fa-solid fa-user"></i>
+                                {% endif %}
+                            </div>
+
+                        <div class="conversation-info">
+                            <div class="conversation-name">
+                                {{ msg.username }}
+                            </div>
+                        <div class="conversation-preview">
+                            {{ msg.message }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+                {% endfor %}
+            {% else %}
+                <div class="empty-chat">
+                    <div class="empty-chat-icon">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </div>
+                    <p>No messages yet.</p>
+                </div>
+            {% endif %}
+        </aside>
+
+        <section class="chat-preview">
+            <div class="empty-chat">
+                <div class="empty-chat-icon">
+                    <i class="fa-solid fa-comment-dots"></i>
+                </div>
+                <p>Select a conversation to keep messaging.</p>
+            </div>
+        </section>
+
+    </div>
+
+</div>
+
+</body>
+</html>

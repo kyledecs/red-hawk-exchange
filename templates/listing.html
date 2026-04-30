@@ -61,12 +61,18 @@
                     <!-- Centered Image Area -->
                     <div style="margin: 0 auto 24px; max-width: 500px;">
                         <div class="card-media" style="border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);">
-                            {% if listing.photos %}
-                                <img src="{{ listing.photos[0] }}" class="card-image" alt="{{ listing.title }}">
+                            {%if listing.display_photos %}
+                                <img
+                                    class = "card-image"
+                                    src = "{{ listing.display_photos }}"
+                                    alt = "{{ listing.title }}"
+                                />
                             {% else %}
-                                <div style="display: flex; align-items: center; justify-content: center; height: 400px; background: #f3f4f6;">
-                                    <i class="fa-solid fa-image fa-3x" style="color: var(--muted)"></i>
-                                </div>
+                                <img
+                                    class = "card-image"
+                                    src = "{{ url_for('static', filename='img/hawkLogo.svg') }}"
+                                    alt = "Default Product Image"
+                                />
                             {% endif %}
                         </div>
                     </div>
