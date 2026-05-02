@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Listing - RedHawk Exchange</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="centered-form-page">
+
+    <header class = "header">
+        <div class = "brand">
+            <a href="{{url_for('homepage')}}">
+            <img class = "brand-logo"
+                src = "{{ url_for('static', filename='img/hawkLogo.svg') }}" 
+                alt = "RedHawk Exchange Logo" />
+            </a>
+
+            <div class = "brand-name">
+                <span class = "brand-redhawk">RedHawk</span>
+                <span class = "brand-exchange">Exchange</span>
+            </div>
+        </div>
+
+         <!-- Top Right button -->
+          <div class = "actions">
+
+            <!-- Creat Listing button (updated to actually send to create listing 4/7)-->
+             <a href = "{{ url_for('createListing') }}" 
+                class = "primary-btn" 
+                style = "text-decoration: none; display: inline-flex; align-items: center;"> + Create Listing
+            </a>
+
+            <!-- Messages button -->
+            <button class = "icon-btn" aria-label = "Messages">
+                <i class = "fa-solid fa-envelope"></i>
+            </button>
+
+            <!-- Profile button -->
+             <div class="dropdown">
+                <button class="icon-btn" aria-label="Profile">
+                    {% if user_data and user_data.avatarURL %}
+                        <img src="{{ user_data.avatarURL }}" alt="Profile" class="profile-img-icon">
+                    {% else %}
+                        <i class="fa-solid fa-user"></i>
+                    {% endif %}
+                </button>
+
+                <div class="dropdown-content">
+                    <a href="{{ url_for('profile') }}">
+                        <i class="fa-solid fa-id-card"></i> View Profile
+                    </a>
+                    <hr> 
+                    <a href="{{ url_for('logout') }}" class="logout-link">
+                        <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                    </a>
+                </div>
+            </div>
+
+          </div>
+    </header>
+
+    <div class="container">
+
+        <main class="page">
+            <div class="card" style="max-width: 600px; margin: 40px auto; padding: 30px;">
+                <h2 class="page-title">Create New Listing</h2>
+                
+                <form action="/createListing" method="POST" enctype='multipart/form-data'>
+                    <div class="form-group">
+                        <label class="card-name">Item Title</label>
+                        <input type="text" class="search-input custom-input" name="title" placeholder="Enter name of item...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="card-name">Price ($)</label>
+                        <input type="number" class="search-input custom-input" name="price" step='0.01' min='0'>
+                    </div>
+
+                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                        <div style="flex: 1;">
+                            <label class="card-name">Category</label>
+                            <select class="custom-input" name="category">
+                                <option value="Technology">Technology</option> <!-- Placeholder Values -->
+                                <option value="Textbooks">Textbooks</option>
+                                <option value="Stationary">Stationary</option>
+                                <option value="Apparel">Apparel</option> 
+                                <option value="Decor">Decor</option>
+                                <option value="Miscellaneous">Miscellaneous</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="card-name">Condition</label>
+                            <select class="custom-input" name="condition">
+                                <option value="New">New</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Used - Good">Used - Good</option>
+                                <option value="Used - Fair">Used - Fair</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="card-name">Description</label>
+                        <input name="description" type="text" class="custom-input" rows="5" placeholder="Describe your item...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="card-name">Upload Photos</label>
+                        <input type="file" class="custom-input" name="photos" accept='image/*'>
+                    </div>
+
+                    <button type="submit" class="primary-btn" style="width: 100%; height: 50px; font-size: 16px;">
+                        Post Listing
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

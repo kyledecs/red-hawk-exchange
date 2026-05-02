@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Listing - RedHawk Exchange</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="centered-form-page">
+
+<header class="header">
+    <div class="brand">
+        <a href="{{ url_for('homepage') }}">
+            <img class="brand-logo"
+                 src="{{ url_for('static', filename='img/hawkLogo.svg') }}"
+                 alt="RedHawk Exchange Logo"/>
+        </a>
+
+        <div class="brand-name">
+            <span class="brand-redhawk">RedHawk</span>
+            <span class="brand-exchange">Exchange</span>
+        </div>
+    </div>
+
+    <div class="actions">
+
+        <button class="icon-btn">
+            <i class="fa-solid fa-envelope"></i>
+        </button>
+
+        <div class="dropdown">
+            <button class="icon-btn">
+                {% if user_data and user_data.avatarURL %}
+                    <img src="{{ user_data.avatarURL }}" class="profile-img-icon">
+                {% else %}
+                    <i class="fa-solid fa-user"></i>
+                {% endif %}
+            </button>
+
+            <div class="dropdown-content">
+                <a href="{{ url_for('profile') }}">
+                    <i class="fa-solid fa-id-card"></i> View Profile
+                </a>
+                <hr>
+                <a href="{{ url_for('logout') }}" class="logout-link">
+                    <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                </a>
+            </div>
+        </div>
+
+    </div>
+</header>
+
+<div class="container">
+
+    <main class="page">
+        <div class="card" style="max-width: 600px; margin: 40px auto; padding: 30px;">
+
+            <h2 class="page-title">Edit Listing</h2>
+
+            <!-- 🔥 IMPORTANT: different action -->
+            <form action="/update-listing/{{ listing.id }}" method="POST" enctype="multipart/form-data">
+
+                <!-- TITLE -->
+                <div class="form-group">
+                    <label class="card-name">Item Title</label>
+                    <input type="text"
+                           class="search-input custom-input"
+                           name="title"
+                           value="{{ listing.title }}"
+                           required>
+                </div>
+
+                <!-- PRICE -->
+                <div class="form-group">
+                    <label class="card-name">Price ($)</label>
+                    <input type="number"
+                           class="search-input custom-input"
+                           name="price"
+                           step="0.01"
+                           min="0"
+                           value="{{ listing.price }}"
+                           required>
+                </div>
+
+                <!-- CATEGORY + CONDITION -->
+                <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+
+                    <div style="flex: 1;">
+                        <label class="card-name">Category</label>
+                        <select class="custom-input" name="category">
+                            <option value="Technology" {% if listing.category == "Technology" %}selected{% endif %}>Technology</option>
+                            <option value="Textbooks" {% if listing.category == "Textbooks" %}selected{% endif %}>Textbooks</option>
+                            <option value="Stationary" {% if listing.category == "Stationary" %}selected{% endif %}>Stationary</option>
+                            <option value="Apparel" {% if listing.category == "Apparel" %}selected{% endif %}>Apparel</option>
+                            <option value="Decor" {% if listing.category == "Decor" %}selected{% endif %}>Decor</option>
+                            <option value="Miscellaneous" {% if listing.category == "Miscellaneous" %}selected{% endif %}>Miscellaneous</option>
+                        </select>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <label class="card-name">Condition</label>
+                        <select class="custom-input" name="condition">
+                            <option value="New" {% if listing.condition == "New" %}selected{% endif %}>New</option>
+                            <option value="Like New" {% if listing.condition == "Like New" %}selected{% endif %}>Like New</option>
+                            <option value="Used - Good" {% if listing.condition == "Used - Good" %}selected{% endif %}>Used - Good</option>
+                            <option value="Used - Fair" {% if listing.condition == "Used - Fair" %}selected{% endif %}>Used - Fair</option>
+                        </select>
+                    </div>
+
+                    <div style="flex: 1;">
+                        <label class="card-name">Status</label>
+                        <select class="custom-input" name="status">
+                            <option value="Available" {% if listing.status == "Available" %}selected{% endif %}>Available</option>
+                            <option value="Sold" {% if listing.status == "Sold" %}selected{% endif %}>Sold</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="form-group">
+                    <label class="card-name">Description</label>
+                    <textarea class="custom-input"
+                              name="description"
+                              rows="5">{{ listing.description or ''}}</textarea>
+                </div>
+
+                <!-- PHOTOS -->
+                <div class="form-group">
+                    <label class="card-name">Update Photos (optional)</label>
+                    <input type="file"
+                           class="custom-input"
+                           name="photos"
+                           accept="image/*">
+                </div>
+
+                <!-- BUTTON -->
+                <button type="submit"
+                        class="primary-btn"
+                        style="width:100%; height:50px; font-size:16px;">
+                    Update Listing
+                </button>
+
+            </form>
+
+        </div>
+    </main>
+
+</div>
+
+</body>
+</html>

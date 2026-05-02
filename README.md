@@ -133,7 +133,9 @@ RedHawkExchange/
 ├── templates/
 │   ├── login.html
 │   ├── register.html
-│   └── dashboard.html
+│   ├── dashboard.html
+│   ├── createListing.html
+│   └── profile.html
 └── static/
 ```
 

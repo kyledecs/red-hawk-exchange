@@ -1,0 +1,1342 @@
+/* This file contains the CSS styles for the RedHawk Exchange homepage. */
+
+/* Colors */
+:root{
+    --bg: #f4f3f1;
+    --surface: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --red: #be211e;
+    --red-dark: #c62828;
+    --creamish: #f6f3ee;
+
+    --radius: 16px;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Times New Roman", Times, serif;;
+    color: var(--text);
+    background-color: var(--creamish);
+}
+
+/* Header */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--creamish);
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 14px 18px;
+}
+
+/* Branding, logo/name */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 220px;
+}
+
+.brand-logo {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    background: var(--creamish);
+}
+
+.brand-name {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.brand-redhawk {
+    font-weight: 800;
+    font-size: 25px;
+    color: var(--text);
+}
+
+.brand-exchange {
+    font-weight: 800;
+    font-size: 25px;
+    color: var(--red);
+}
+
+/* Search Bar*/
+.search-bar {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.search {
+    width: min(640px, 100%);
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background: #f3f4f6;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    padding: 10px 14px;
+}
+
+/* ================================== Search icon ==========================*/
+.search-icon {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    opacity: 0.65;
+}
+
+.search-icon::before {
+    content: " ";
+    position: absolute;
+    inset: 0;
+    border: 2px solid #9ca3af;
+    border-radius: 50%;
+    transform: scale(0.72);
+}
+
+.search-icon::after {
+    content: " ";
+    position: absolute;
+    width: 9px;
+    height: 2px;
+    background: #9ca3af;
+    right: -2px;
+    bottom: 2px;
+    transform: rotate(45deg);
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 14px;
+}
+
+/* ===========================Header action Buttons ===================*/
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.profile-img-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px; 
+    object-fit: cover;   
+    display: block;
+}
+
+.icon-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.12s ease;
+    overflow: hidden;
+    padding: 0;
+}
+
+.icon-btn i {
+    font-size: 18px;
+    color: var(--text);
+}
+
+.icon-btn:hover {
+    background: #f9fafb;
+}
+
+.icon-btn:active {
+    transform: translateY(1px);
+}
+
+/* =========================== Create Listing Button ===================*/
+.primary-btn {
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: none;
+
+    background: var(--red);
+    color: white;
+
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: var(--red-dark);
+}
+
+/* =========================== Category Pills ===================*/
+.categories {
+    max-width: var(--container);
+    margin: 18px auto 0;
+    padding: 0 18px;
+
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+
+    justify-content: center;
+}
+
+.pill {
+    border: 1px solid #d6d2cd;
+    background: var(--surface);
+
+    padding: 14px 20px;
+    border-radius: 999px;
+
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+
+    transition: 0.12s ease;
+}
+
+.pill:hover {
+    background: #f9fafb;
+}
+
+/* =========================== Product Grid ===================*/
+.page {
+    max-width: var(--container);
+    margin: 18px auto 36px;
+    padding: 0 18px;
+}
+
+.page-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+    align-items: stretch;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+
+    box-shadow: var(--shadow);
+    transition: 0.12s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-media {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: #f3f4f6;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 16px; 
+    flex-grow: 1;  
+    display: flex;
+    flex-direction: column;
+}
+
+.card-name {
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.card-price {
+    font-weight: 800;
+    color: var(--text);
+}
+
+/*=========================== Layout Container ===================*/
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+/* =========================== Responsive Design ===================*/
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .primary-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-name {
+        display: none;
+    }
+}
+
+/* =========================== Form Styles =================== */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Styled to match your search-bar aesthetic */
+.custom-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: #f3f4f6;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.custom-input:focus {
+    border-color: var(--red);
+    background: var(--surface);
+}
+
+/* Ensuring dropdowns and textareas match */
+select.custom-input {
+    cursor: pointer;
+    appearance: none; /* Removes default browser arrow for a cleaner look */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+textarea.custom-input {
+    resize: vertical;
+}
+
+/* =========================== Auth Pages ===================*/
+.auth-page {
+    min-height: 100vh;
+    background: var(--creamish);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 40px;
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.auth-title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.auth-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    background: white;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(190, 33, 30, 0.1);
+}
+
+.auth-btn {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 999px;
+    background: var(--red);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.12s ease;
+}
+
+.auth-btn:hover {
+    background: var(--red-dark);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 18px;
+}
+
+.auth-link {
+    color: var(--red);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+/* =========================== Auth Messages ===================*/
+.auth-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.auth-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* =========================== Split Login Layout ===================*/
+.split-auth-page {
+    min-height: 100vh;
+    display: flex;
+    background: var(--creamish);
+}
+
+.info-panel {
+    width: 50%;
+    background: var(--creamish);
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+}
+
+.info-content {
+    max-width: 500px;
+}
+
+.info-title {
+    font-size: 42px;
+    color: black;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.info-text {
+    font-size: 18px;
+    color: black;
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.info-features {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.feature-item {
+    padding: 12px 0;
+}
+
+.login-panel {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Mobile responsive */
+@media (max-width: 900px) {
+    .split-auth-page {
+        flex-direction: column;
+    }
+
+    .info-panel,
+    .login-panel {
+        width: 100%;
+    }
+
+    .info-panel {
+        padding: 40px 24px;
+        text-align: center;
+    }
+
+    .info-title {
+        font-size: 32px;
+    }
+}
+
+.dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding-bottom: 20px; 
+    margin-bottom: -20px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 55px; 
+    background-color: var(--surface);
+    min-width: 180px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    z-index: 100;
+    overflow: hidden;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: var(--text);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+/* Hover effect for links */
+.dropdown-content a:hover {
+    background-color: #f3f4f6;
+}
+
+/* Show the menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.logout-link {
+    color: var(--red) !important;
+}
+
+.dropdown-content hr {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+}
+
+/* Creates an invisible hover bridge */
+.dropdown-content::before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: transparent;
+}
+
+
+/* PROFILE EDIT CARD */
+.profile-edit-card {
+    margin-top: 16px;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    max-width: 420px;
+}
+
+/* TITLE */
+.profile-edit-title {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+/* ACTION BUTTON ROW */
+.profile-edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+/* CANCEL BUTTON */
+.secondary-btn {
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--text);
+    transition: 0.2s;
+}
+
+.secondary-btn:hover {
+    background: #f3f4f6;
+}
+
+/* ===== TABS CONTAINER ===== */
+.tabs {
+    margin-top: 50px;   /* FIXES spacing from profile */
+    display: flex;
+    gap: 10px;
+
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+}
+
+/* ===== TAB BUTTON ===== */
+.tab {
+    background: transparent;
+    border: none;
+
+    padding: 10px 16px;
+    border-radius: 999px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: var(--muted);
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+/* HOVER */
+.tab:hover {
+    background: #f3f4f6;
+    color: var(--text);
+}
+
+/* ACTIVE TAB */
+.tab.active-tab {
+    background: var(--red);
+    color: white;
+}
+
+
+/* PROFILE CARD WRAPPER */
+.profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+
+    padding: 24px;
+    margin-top: 40px;
+}
+
+/* TOP LAYOUT */
+.profile-top {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* AVATAR FIX (this is the big one) */
+.profile-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    background: #f3f4f6;
+    border: 2px solid var(--border);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-avatar i {
+    font-size: 34px;
+    color: var(--muted);
+}
+
+/* TEXT HIERARCHY */
+.profile-name {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.profile-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.profile-bio {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* ===== PROFILE ACTION BUTTON (EDIT PROFILE) ===== */
+.profile-action-btn {
+    margin-top: 12px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 14px;
+
+    cursor: pointer;
+    transition: 0.2s;
+
+    color: var(--text);
+}
+
+.profile-action-btn:hover {
+    background: #f3f4f6;
+    transform: translateY(-1px);
+}
+
+.listings-grid {
+    margin-top: 24px;
+}
+
+.listings-grid p {
+    color: var(--muted);
+    font-size: 14px;
+    padding: 30px 0;
+}
+
+.save-btn {
+    margin-top: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    padding: 8px 12px;
+    cursor: pointer;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    transition: 0.2s;
+}
+
+.save-btn:hover {
+    background: #f3f4f6;
+}
+
+.heart-form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.heart-btn {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow: var(--shadow);
+}
+
+.heart-btn i {
+    font-size: 16px;
+    color: var(--red);
+}
+
+.heart-btn:hover {
+    transform: scale(1.05);
+}
+
+/* DELETE BUTTON POSITION */
+.delete-form {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+/* DELETE BUTTON STYLE */
+.delete-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+
+    background: white;
+    color: #ef4444; /* red */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+/* HOVER EFFECT */
+.delete-btn:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* EDIT BUTTON POSITION */
+.edit-form {
+    position: absolute;
+    bottom: 10px;
+    right: 55px; /* sits left of trash */
+    z-index: 10;
+}
+
+/* EDIT BUTTON STYLE */
+.edit-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+
+    background: white;
+    color: #3b82f6; /* blue */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+/* HOVER */
+.edit-btn:hover {
+    background: #3b82f6;
+    color: white;
+    transform: scale(1.1);
+}
+
+.plain-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Card pop-up */
+.card {
+    cursor: pointer;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    text-align: left;
+}
+
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    border: none;
+    background: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.modal-image {
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+.modal-price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #8b0000;
+}
+
+/* Inbox Page */
+
+.inbox-page,
+.message-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+}
+
+.inbox-header,
+.message-header {
+    background: #ffffff;
+    border-bottom: 1px solid #ddd;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.inbox-title,
+.message-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.inbox-icon,
+.seller-avatar,
+.conversation-avatar,
+.empty-chat-icon {
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.inbox-icon,
+.seller-avatar {
+    width: 42px;
+    height: 42px;
+}
+
+.conversation-avatar {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+}
+
+.empty-chat-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    font-size: 26px;
+}
+
+.inbox-title h1,
+.message-header h1 {
+    margin: 0;
+    color: #111;
+}
+
+.inbox-title h1 {
+    font-size: 22px;
+}
+
+.message-header h1 {
+    font-size: 20px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #111;
+    font-weight: 600;
+}
+
+.inbox-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    background: #ffffff;
+}
+
+.conversation-list {
+    border-right: 1px solid #ddd;
+    background: #fafafa;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.conversation-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 16px;
+    border-radius: 24px;
+    border: 1px solid #ddd;
+    outline: none;
+    margin-bottom: 16px;
+}
+
+.conversation-card {
+    display: block;
+    text-decoration: none;
+    color: #111;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid #eee;
+}
+
+.conversation-card:hover {
+    background: #f0f0f0;
+}
+
+.conversation-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.conversation-info {
+    width: 100%;
+    overflow: hidden;
+}
+
+.conversation-name {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.conversation-preview {
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-preview,
+.chat-container {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: #f5f5f5;
+}
+
+.chat-container {
+    flex: 1;
+}
+
+.empty-chat {
+    margin: auto;
+    text-align: center;
+    color: #666;
+}
+
+.message-bubble,
+.chat-bubble {
+    max-width: 60%;
+    padding: 14px 18px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    line-height: 1.4;
+}
+
+.message-bubble,
+.user-bubble {
+    background: var(--red);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+}
+
+.seller-bubble {
+    background: #e9e9e9;
+    color: #111;
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+}
+
+.message-meta {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 4px;
+    align-self: flex-end;
+}
+
+/* Message Page */
+.message-form-area {
+    background: #ffffff;
+    border-top: 1px solid #ddd;
+    padding: 18px 24px;
+}
+
+.message-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.message-input {
+    flex: 1;
+    resize: none;
+    border: 1px solid #ddd;
+    border-radius: 24px;
+    padding: 14px 18px;
+    font-size: 15px;
+    outline: none;
+    height: 48px;
+    font-family: inherit;
+}
+
+.message-input:focus {
+    border-color: var(--red);
+}
+
+.send-button {
+    border: none;
+    background: var(--red);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.send-button:hover {
+    background: var(--red-dark);
+}
+
+@media (max-width: 800px) {
+    .inbox-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .chat-preview {
+        display: none;
+    }
+
+    .conversation-list {
+        border-right: none;
+    }
+}
+
+/* ================= Message Button in Card Pop-Up ================= */
+
+.message-btn-small {
+    background: var(--red);
+    color: white;
+
+    border: none;
+    border-radius: 999px;
+
+    padding: 10px 16px;   
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.15s ease;
+
+    margin-top: 10px;
+}
+
+.message-btn-small:hover {
+    background: var(--red-dark);
+}
+
+.message-btn-small:active {
+    transform: scale(0.97);
+}
+
+/* Chat bubbles*/
+.chat-container {
+    flex: 1;
+    padding: 25px;
+    overflow-y: auto;
+    background: #f7f7f7;
+}
+
+.chat-row {
+    display: flex;
+    width: 100%;
+    margin-bottom: 14px;
+}
+
+.sent-row {
+    justify-content: flex-end;
+}
+
+.received-row {
+    justify-content: flex-start;
+}
+
+.message-meta {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 4px;
+}
+
+.sent-row .message-meta {
+    text-align: right;
+}
+
+.received-row .message-meta {
+    text-align: left;
+}
+
+.chat-bubble {
+    max-width: 420px;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 15px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.my-bubble {
+    background: #c8102e;
+    color: white;
+    border-bottom-right-radius: 6px;
+}
+
+.seller-bubble {
+    background: #e9e9e9;
+    color: #222;
+    border-bottom-left-radius: 6px;
+}
+
+/* Container for the modal buttons */
+.modal-actions {
+    display: flex;      
+    margin-top: 20px;   
+    align-items: center;
+}
+
+
+.modal-actions a {
+    text-decoration: none;
+    display: inline-block;
+}

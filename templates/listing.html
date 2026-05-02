@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ listing.title }} | RedHawk Exchange</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="brand">
+            <a href="{{ url_for('homepage') }}">
+                <img class="brand-logo" src="{{ url_for('static', filename='img/hawkLogo.svg') }}" alt="Logo" />
+            </a>
+            <div class="brand-name">
+                <span class="brand-redhawk">RedHawk</span>
+                <span class="brand-exchange">Exchange</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="{{ url_for('createListing') }}" class="primary-btn" style="text-decoration:none; display:inline-flex; align-items:center;">
+                + Create Listing
+            </a>
+            <div class="dropdown">
+                <button class="icon-btn">
+                    {% if user_data and user_data.avatarURL %}
+                        <img src="{{ user_data.avatarURL }}" class="profile-img-icon">
+                    {% else %}
+                        <i class="fa-solid fa-user"></i>
+                    {% endif %}
+                </button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('profile') }}"><i class="fa-solid fa-id-card"></i> View Profile</a>
+                    <hr>
+                    <a href="{{ url_for('logout') }}" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="container" style="max-width: 800px;"> <!-- Narrower container helps with centering look -->
+            
+            <div class="card">
+                <div class="card-body" style="text-align: center;"> <!-- Centers all text content -->
+                    
+                    <!-- Header Row: Title and Price side-by-side -->
+                    <div style="display: flex; justify-content: center; align-items: baseline; gap: 15px; margin-bottom: 20px;">
+                        <div class="card-name" style="font-size: 32px;">{{ listing.title }}</div>
+                        <div class="card-price" style="font-size: 24px; color: var(--red);">  <!-- Using your red variable -->
+                            ${{ listing.price }}
+                        </div>
+                    </div>
+                    
+
+                    <!-- Centered Image Area -->
+                    <div style="margin: 0 auto 24px; max-width: 500px;">
+                        <div class="card-media" style="border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);">
+                            {%if listing.display_photos %}
+                                <img
+                                    class = "card-image"
+                                    src = "{{ listing.display_photos }}"
+                                    alt = "{{ listing.title }}"
+                                />
+                            {% else %}
+                                <img
+                                    class = "card-image"
+                                    src = "{{ url_for('static', filename='img/hawkLogo.svg') }}"
+                                    alt = "Default Product Image"
+                                />
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Description and Metadata (Centered) -->
+                    <div style="max-width: 600px; margin: 0 auto;">
+                        {% if listing.description %}
+                            <p class="profile-bio" style="font-size: 16px; line-height: 1.6;">{{ listing.description }}</p>
+                        {% endif %}
+
+                        <div class="profile-meta" style="display: flex; flex-direction: row; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px; color: var(--muted);">
+                            <span><strong>Listed by:</strong> {{ listing.lister_name }}</span>
+                            {% if listing.status %}<span><strong>Status:</strong> {{ listing.status }}</span>{% endif %}
+                            {% if listing.category %}<span><strong>Category:</strong> {{ listing.category }}</span>{% endif %}
+                            {% if listing.condition %}<span><strong>Condition:</strong> {{ listing.condition }}</span>{% endif %}
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border); margin: 32px 0;">
+
+                    <!-- Comment Section -->
+                    <div class="profile-edit-card" style="max-width: 100%; text-align: left; box-shadow: none; border: 1px solid var(--border);">
+                        <h3 class="profile-edit-title"><i class="fa-regular fa-comments"></i> Comments</h3>
+                        
+                        <form action="/addComment/{{ listing.id }}" method="POST">
+                            <div class="form-group">
+                                <textarea name="comment" class="custom-input" placeholder="Add a comment..." rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="primary-btn" style="width: 100%;">Post Comment</button>
+                        </form>
+
+                        <div class="listings-grid" style="margin-top: 16px;">
+                            {% if comments %}
+                                {% for comment in comments %}
+                                    <div style="padding: 12px 0; border-bottom: 1px solid var(--border);">
+                                        <!-- Flex container to align name and date -->
+                                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                            <div class="card-name">{{ comment.name }}</div>
+                                            <small class="text-muted" style="font-size: 12px;">
+                                                {{ comment.created_at[:10] }} {{ comment.created_at[11:16] }}
+                                            </small>
+                                        </div>
+                                        
+                                        <div style="font-size: 14px; color: var(--text); margin-top: 4px;">
+                                            {{ comment.content }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p style="text-align: center; padding: 20px; color: var(--muted);">No comments yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

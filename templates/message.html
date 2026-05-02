@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Seller</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="message-page">
+
+    <div class="message-header">
+        <div class="message-header-left">
+            <div class="seller-avatar">
+                {% if seller_avatar %}
+                    <img src="{{ seller_avatar }}" class="profile-img">
+                {% else %}
+                    <i class="fa-solid fa-user"></i>
+                {% endif %}
+            </div>
+
+            <div>
+                <h1>{{ seller_username }}</h1>
+                <small>Seller</small>
+            </div>
+        </div>
+
+        <a class="back-link" href="{{ url_for('inbox') }}">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="chat-container">
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="chat-row {% if msg.sender_username == 'You' %}sent-row{% else %}received-row{% endif %}">
+                    <div>
+                        <div class="message-meta">
+                            {{ msg.sender_username }}
+                        </div>
+
+                        <div class="chat-bubble {{ msg.bubble_class }}">
+                            {{ msg.message }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="chat-row received-row">
+                <div class="chat-bubble seller-bubble">
+                    Hi! Send a message about this listing.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="message-form-area">
+        <form class="message-form" action="{{ url_for('send_message') }}" method="POST">
+
+            <input type="hidden" name="listing_id" value="{{ listing_id }}">
+            <input type="hidden" name="receiver_id" value="{{ seller_id }}">
+
+            <textarea 
+                class="message-input"
+                name="message"
+                placeholder="Type your message..."
+                required></textarea>
+
+            <button class="send-button" type="submit">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
