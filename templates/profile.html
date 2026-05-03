@@ -34,9 +34,12 @@
             + Create Listing
         </a>
 
-        <button class="icon-btn">
-            <i class="fa-solid fa-envelope"></i>
-        </button>
+        <!-- Messages button -->
+        <a href="{{ url_for('inbox') }}">
+            <button class="icon-btn" type="button" aria-label="Inbox">
+                <i class="fa-solid fa-envelope"></i>
+            </button>
+        </a>
 
         <div class="dropdown">
             <button class="icon-btn">

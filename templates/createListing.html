@@ -27,16 +27,18 @@
          <!-- Top Right button -->
           <div class = "actions">
 
-            <!-- Creat Listing button (updated to actually send to create listing 4/7)-->
+            <!-- Create Listing button -->
              <a href = "{{ url_for('createListing') }}" 
                 class = "primary-btn" 
                 style = "text-decoration: none; display: inline-flex; align-items: center;"> + Create Listing
             </a>
 
             <!-- Messages button -->
-            <button class = "icon-btn" aria-label = "Messages">
-                <i class = "fa-solid fa-envelope"></i>
-            </button>
+            <a href="{{ url_for('inbox') }}">
+                <button class="icon-btn" type="button" aria-label="Inbox">
+                    <i class="fa-solid fa-envelope"></i>
+                </button>
+            </a>
 
             <!-- Profile button -->
              <div class="dropdown">

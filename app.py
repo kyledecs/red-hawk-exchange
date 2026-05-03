@@ -487,6 +487,9 @@ def listing_detail(listing_id):
     listing_map = {p["id"]: p['displayName'] for p in profilesListing.data}
 
     listing.data["lister_name"] = listing_map.get(listing.data['lister_id'], "Unknown User")
+    listing.data["display_photos"] = get_first_photo(listing.data.get("photos"))
+    
+    print(listing.data)
     
     comments =  supabase.table("comments") \
                 .select("*") \

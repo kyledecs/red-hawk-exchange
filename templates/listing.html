@@ -26,6 +26,14 @@
             <a href="{{ url_for('createListing') }}" class="primary-btn" style="text-decoration:none; display:inline-flex; align-items:center;">
                 + Create Listing
             </a>
+
+            <!-- Messages button -->
+            <a href="{{ url_for('inbox') }}">
+                <button class="icon-btn" type="button" aria-label="Inbox">
+                    <i class="fa-solid fa-envelope"></i>
+                </button>
+            </a>
+
             <div class="dropdown">
                 <button class="icon-btn">
                     {% if user_data and user_data.avatarURL %}
